@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Solver from '../components/Solver.tsx';
+
+const title = "Word Scramble Solver — Solve Scrambled Word Puzzles";
+const description = "Solve any word scramble puzzle instantly. Enter scrambled letters and discover all possible words. Perfect for Scrabble, Word Cookies, and Jumbles.";
+const canonical = "https://wordforge.app/word-scramble/";
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
+    
+    {/* Hero Section */}
+    <div class="text-center mb-12 sm:mb-16">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6">
+        Word Scramble Solver
+      </h1>
+      <p class="text-lg sm:text-xl text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed">
+        Quickly solve word scramble puzzles, Jumble games, and vocabulary tests. Enter your scrambled letters below to find all solutions.
+      </p>
+    </div>
+
+    {/* Solver Island */}
+    <section aria-label="Word scramble solver tool" class="mb-16">
+      <Solver client:only="preact" />
+    </section>
+
+    {/* How to Solve Word Scrambles */}
+    <section class="mt-16 sm:mt-20 panel p-6 sm:p-8" aria-label="Scramble solving tips">
+      <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-[var(--color-foreground)]">How to Solve Word Scrambles</h2>
+      <p class="text-[var(--color-muted)] leading-relaxed mb-4">
+        Word scramble puzzles require you to rearrange a set of letters to find a secret word. When you get stuck, using an automated solver can help. You can also solve them manually by:
+      </p>
+      <ul class="list-disc pl-5 mb-4 text-[var(--color-muted)] space-y-2 text-sm leading-relaxed">
+        <li><strong>Grouping common letters</strong>: Look for common prefix stems like <i>RE-</i>, <i>UN-</i>, or suffixes like <i>-ING</i>, <i>-ED</i>, <i>-LY</i>.</li>
+        <li><strong>Consonant-Vowel patterns</strong>: Alternate consonants and vowels. Legitimate English words almost always follow predictable spacing structures.</li>
+        <li><strong>Trying out small word combinations</strong>: Start by finding smaller 2 or 3 letter words to understand letter pairings.</li>
+      </ul>
+      <p class="text-[var(--color-muted)] leading-relaxed">
+        WordForge simplifies this process by checking all mathematical combinations against a validated lexicon of English words, returning solutions sorted by length and score.
+      </p>
+    </section>
+
+  </div>
+</Layout>

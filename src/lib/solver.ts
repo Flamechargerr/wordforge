@@ -11,6 +11,7 @@ import {
   normalizeInput,
   validateInput,
   groupByLength,
+  calculateWWFScore,
 } from './scrabble.ts';
 
 /** Maximum input length before truncation for performance */
@@ -41,64 +42,134 @@ export function solve(
     };
   }
 
-  const minLength = Math.max(2, options.minLength ?? 2);
-  const maxLength = Math.min(
-    options.maxLength ?? normalized.length,
-    normalized.length
-  );
-
   // Truncate very long inputs for performance
   const wasTruncated = normalized.length > MAX_INPUT_LENGTH;
   const effectiveInput = wasTruncated
     ? normalized.slice(0, MAX_INPUT_LENGTH)
     : normalized;
 
-  const inputCounts = getLetterCounts(effectiveInput);
+  // Extract wildcards
+  let wildcardCount = 0;
+  let normalLetters = '';
+  for (const ch of effectiveInput) {
+    if (ch === '?' || ch === '*' || ch === ' ') {
+      wildcardCount++;
+    } else {
+      normalLetters += ch;
+    }
+  }
+
+  const minLength = Math.max(2, options.minLength ?? 2);
+  const maxLength = Math.min(
+    options.maxLength ?? effectiveInput.length,
+    effectiveInput.length
+  );
+
   const results: WordEntry[] = [];
   const seen = new Set<string>();
 
-  // Generate all subset signatures and look up in the index
-  const chars = effectiveInput.split('').sort();
-  const n = chars.length;
+  if (wildcardCount > 0) {
+    // Wildcard solving algorithm: iterate over dictionary index
+    const normalCounts = getLetterCounts(normalLetters);
 
-  // Use bitmask iteration for subset generation
-  // 2^n - 1 subsets (excluding empty set)
-  for (let mask = 1; mask < 1 << n; mask++) {
-    const subsetLength = countBits(mask);
+    for (const [signature, entries] of dictionary.index.entries()) {
+      if (signature.length < minLength || signature.length > maxLength) {
+        continue;
+      }
 
-    if (subsetLength < minLength || subsetLength > maxLength) {
-      continue;
-    }
+      // Check if signature can be formed with available normal letters + wildcards
+      let requiredWildcards = 0;
+      let possible = true;
 
-    const subset: string[] = [];
-    for (let i = 0; i < n; i++) {
-      if (mask & (1 << i)) {
-        subset.push(chars[i]);
+      const sigCounts = getLetterCounts(signature);
+      for (const [ch, count] of sigCounts.entries()) {
+        const available = normalCounts.get(ch) ?? 0;
+        if (count > available) {
+          requiredWildcards += (count - available);
+          if (requiredWildcards > wildcardCount) {
+            possible = false;
+            break;
+          }
+        }
+      }
+
+      if (possible) {
+        for (const entry of entries) {
+          if (!seen.has(entry.word)) {
+            seen.add(entry.word);
+            results.push(entry);
+          }
+        }
       }
     }
+  } else {
+    // Normal solving algorithm: bitmask subset lookup
+    const inputCounts = getLetterCounts(effectiveInput);
+    const chars = effectiveInput.split('').sort();
+    const n = chars.length;
 
-    const signature = subset.join('');
-    const matches = dictionary.index.get(signature);
+    for (let mask = 1; mask < 1 << n; mask++) {
+      const subsetLength = countBits(mask);
 
-    if (matches) {
-      for (const entry of matches) {
-        if (!seen.has(entry.word) && canFormWord(entry.word, inputCounts)) {
-          seen.add(entry.word);
-          results.push(entry);
+      if (subsetLength < minLength || subsetLength > maxLength) {
+        continue;
+      }
+
+      const subset: string[] = [];
+      for (let i = 0; i < n; i++) {
+        if (mask & (1 << i)) {
+          subset.push(chars[i]);
+        }
+      }
+
+      const signature = subset.join('');
+      const matches = dictionary.index.get(signature);
+
+      if (matches) {
+        for (const entry of matches) {
+          if (!seen.has(entry.word) && canFormWord(entry.word, inputCounts)) {
+            seen.add(entry.word);
+            results.push(entry);
+          }
         }
       }
     }
   }
 
+  // Apply filters (prefix, suffix, contains)
+  let filteredResults = results;
+
+  if (options.prefix) {
+    const prefix = options.prefix.toLowerCase();
+    filteredResults = filteredResults.filter((e) => e.word.startsWith(prefix));
+  }
+  if (options.suffix) {
+    const suffix = options.suffix.toLowerCase();
+    filteredResults = filteredResults.filter((e) => e.word.endsWith(suffix));
+  }
+  if (options.contains) {
+    const contains = options.contains.toLowerCase();
+    filteredResults = filteredResults.filter((e) => e.word.includes(contains));
+  }
+
+  // Calculate dynamic scores if gameMode is wwf
+  const mappedResults: WordEntry[] = options.gameMode === 'wwf'
+    ? filteredResults.map((entry) => ({
+        word: entry.word,
+        score: calculateWWFScore(entry.word),
+        length: entry.length,
+      }))
+    : filteredResults;
+
   // Sort by: length desc, score desc, alphabetical asc
-  results.sort((a, b) => {
+  mappedResults.sort((a, b) => {
     if (b.length !== a.length) return b.length - a.length;
     if (b.score !== a.score) return b.score - a.score;
     return a.word.localeCompare(b.word);
   });
 
   // Apply limit if specified
-  const limitedResults = options.limit ? results.slice(0, options.limit) : results;
+  const limitedResults = options.limit ? mappedResults.slice(0, options.limit) : mappedResults;
 
   return {
     words: limitedResults,

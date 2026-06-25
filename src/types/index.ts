@@ -29,6 +29,10 @@ export interface SolverOptions {
   readonly maxLength?: number;
   /** Maximum number of results to return (default: unlimited) */
   readonly limit?: number;
+  readonly prefix?: string;
+  readonly suffix?: string;
+  readonly contains?: string;
+  readonly gameMode?: 'scrabble' | 'wwf';
 }
 
 export interface SolverResult {

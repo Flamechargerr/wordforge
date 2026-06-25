@@ -8,9 +8,10 @@ const dictionary = createClientDictionary();
 
 interface SolverProps {
   initialLetters?: string;
+  mode?: 'unscramble' | 'anagram';
 }
 
-export default function Solver({ initialLetters = '' }: SolverProps) {
+export default function Solver({ initialLetters = '', mode = 'unscramble' }: SolverProps) {
   const [input, setInput] = useState(initialLetters);
   const [result, setResult] = useState<SolverResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,21 +21,50 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchStartRef = useRef<number>(0);
 
-  const performSearch = useCallback((value: string) => {
-    const normalized = value.toLowerCase().replace(/[^a-z]/g, '');
-    
-    if (!normalized || normalized.length < 2) {
+  // Advanced options states
+  const [showOptions, setShowOptions] = useState(false);
+  const [prefix, setPrefix] = useState('');
+  const [suffix, setSuffix] = useState('');
+  const [contains, setContains] = useState('');
+  const [gameMode, setGameMode] = useState<'scrabble' | 'wwf'>('scrabble');
+
+  const performSearch = useCallback((
+    value: string,
+    opts: { pref?: string; suff?: string; cont?: string; game?: 'scrabble' | 'wwf' } = {}
+  ) => {
+    // Keep wildcards (?, *, space)
+    const normalized = value.toLowerCase().replace(/[^a-z?* ]/g, '');
+    const letterOnlyLength = normalized.replace(/[?* ]/g, '').length;
+
+    if (!normalized || letterOnlyLength < 2) {
       setResult(null);
       setError(null);
       return;
     }
+
+    const activePrefix = opts.pref !== undefined ? opts.pref : prefix;
+    const activeSuffix = opts.suff !== undefined ? opts.suff : suffix;
+    const activeContains = opts.cont !== undefined ? opts.cont : contains;
+    const activeGameMode = opts.game !== undefined ? opts.game : gameMode;
 
     setIsLoading(true);
     setError(null);
     searchStartRef.current = performance.now();
 
     try {
-      const solverResult = solve(dictionary, normalized);
+      const isAnagramMode = mode === 'anagram';
+      const minLength = isAnagramMode ? normalized.length : 2;
+      const maxLength = isAnagramMode ? normalized.length : normalized.length;
+
+      const solverResult = solve(dictionary, normalized, {
+        minLength,
+        maxLength,
+        prefix: activePrefix || undefined,
+        suffix: activeSuffix || undefined,
+        contains: activeContains || undefined,
+        gameMode: activeGameMode,
+      });
+
       setResult(solverResult);
       setIsLoading(false);
 
@@ -53,25 +83,50 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
         inputLength: normalized.length,
       });
     }
-  }, []);
+  }, [prefix, suffix, contains, gameMode, mode]);
 
   const handleInput = useCallback((value: string) => {
-    setInput(value);
-    
+    // Keep a-z and wildcards
+    const cleaned = value.replace(/[^a-zA-Z?* ]/g, '');
+    setInput(cleaned);
+
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
 
-    const normalized = value.toLowerCase().replace(/[^a-z]/g, '');
-    if (normalized.length >= 2) {
+    const letterOnlyLength = cleaned.replace(/[?* ]/g, '').length;
+    if (letterOnlyLength >= 2) {
       debounceRef.current = setTimeout(() => {
-        performSearch(value);
+        performSearch(cleaned);
       }, 80);
     } else {
       setResult(null);
       setError(null);
     }
   }, [performSearch]);
+
+  const handlePrefixChange = (val: string) => {
+    const clean = val.replace(/[^a-zA-Z]/g, '');
+    setPrefix(clean);
+    performSearch(input, { pref: clean });
+  };
+
+  const handleSuffixChange = (val: string) => {
+    const clean = val.replace(/[^a-zA-Z]/g, '');
+    setSuffix(clean);
+    performSearch(input, { suff: clean });
+  };
+
+  const handleContainsChange = (val: string) => {
+    const clean = val.replace(/[^a-zA-Z]/g, '');
+    setContains(clean);
+    performSearch(input, { cont: clean });
+  };
+
+  const handleGameModeChange = (modeVal: 'scrabble' | 'wwf') => {
+    setGameMode(modeVal);
+    performSearch(input, { game: modeVal });
+  };
 
   const handleCopy = useCallback(async (word: string) => {
     try {
@@ -111,7 +166,8 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
 
   // Track search start
   useEffect(() => {
-    if (input.length >= 3 && input.length < 4) {
+    const letterOnlyLength = input.replace(/[?* ]/g, '').length;
+    if (letterOnlyLength >= 3 && letterOnlyLength < 4) {
       track('search.started', { inputLength: input.length });
     }
   }, [input]);
@@ -119,13 +175,49 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
   const grouped = result ? groupResultsByLength(result.words) : [];
   const totalWords = result?.words.length ?? 0;
   const longestWord = result?.words[0] ?? null;
-  const highestScoringWord = result?.words.reduce((best, current) => 
+  const highestScoringWord = result?.words.reduce((best, current) =>
     current.score > best.score ? current : best, result.words[0] ?? { word: '', score: 0, length: 0 }
   ) ?? null;
 
+  // Wildcard letter highlighter
+  function renderWordWithWildcards(word: string, inputLetters: string) {
+    const normalizedInput = inputLetters.toLowerCase().replace(/[^a-z?* ]/g, '');
+
+    const available = new Map<string, number>();
+    for (const ch of normalizedInput) {
+      if (ch !== '?' && ch !== '*' && ch !== ' ') {
+        available.set(ch, (available.get(ch) ?? 0) + 1);
+      }
+    }
+
+    const chars = word.split('');
+    return (
+      <span class="uppercase tracking-wide font-extrabold flex gap-px">
+        {chars.map((ch, idx) => {
+          const lowerCh = ch.toLowerCase();
+          const count = available.get(lowerCh) ?? 0;
+          if (count > 0) {
+            available.set(lowerCh, count - 1);
+            return <span key={idx} class="text-slate-800 dark:text-slate-100">{ch}</span>;
+          } else {
+            return (
+              <span
+                key={idx}
+                class="text-blue-600 dark:text-blue-400 underline decoration-2 decoration-blue-500/60 underline-offset-[3px] font-black"
+                title="Substituted from blank tile"
+              >
+                {ch}
+              </span>
+            );
+          }
+        })}
+      </span>
+    );
+  }
+
   return (
     <div class="w-full max-w-3xl mx-auto">
-      {/* Search Input (Clean Dashboard Style) */}
+      {/* Search Input Block */}
       <div class="relative group">
         <label for="solver-input" class="sr-only">Enter letters to unscramble</label>
         <input
@@ -134,7 +226,7 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
           type="text"
           value={input}
           onInput={(e) => handleInput((e.target as HTMLInputElement).value)}
-          placeholder="Enter scrambled letters (e.g., listen)..."
+          placeholder={mode === 'anagram' ? "Enter anagram letters (e.g., listen)..." : "Enter scrambled letters (use ?, * or space for blank)..."}
           class="w-full px-5 py-4 text-lg sm:text-xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl text-[var(--color-foreground)] placeholder:text-[var(--color-muted)] transition-all shadow-sm"
           maxLength={15}
           autocomplete="off"
@@ -143,23 +235,135 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
           aria-describedby="solver-hint"
         />
         <div id="solver-hint" class="sr-only">
-          Type letters to instantly unscramble them into valid words. Press / to focus.
+          Type letters to instantly unscramble them. Use ? or * or space for blank/wildcard tiles. Press / to focus.
         </div>
-        
+
         {/* Input indicators */}
         <div class="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-3">
           {isLoading && (
             <div class="w-5 h-5 border-2 border-slate-200 dark:border-slate-800 border-t-blue-600 rounded-full animate-spin" />
           )}
+          <button
+            onClick={() => setShowOptions(!showOptions)}
+            class={`p-2 rounded-xl border transition-all ${
+              showOptions || prefix || suffix || contains || gameMode !== 'scrabble'
+                ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400'
+                : 'bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'
+            }`}
+            title="Advanced Search Filters & Options"
+            aria-label="Toggle filters drawer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          </button>
           <kbd class="hidden sm:inline-flex h-6 select-none items-center gap-1 rounded border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-2 font-mono text-[10px] font-bold text-slate-400">
             /
           </kbd>
         </div>
       </div>
 
+      {/* Wildcard Hint Text */}
+      <div class="mt-2.5 px-1 flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--color-muted)] font-semibold">
+        <span>💡 Enter <b>?</b>, <b>*</b>, or <b>space</b> to represent blank tiles.</span>
+        {input.replace(/[^?* ]/g, '').length > 0 && (
+          <span class="text-blue-600 dark:text-blue-400 font-bold">
+            Active: {input.replace(/[^?* ]/g, '').length} Wildcard{input.replace(/[^?* ]/g, '').length !== 1 ? 's' : ''}
+          </span>
+        )}
+      </div>
+
+      {/* Expandable Advanced Options Drawer */}
+      <div
+        class={`overflow-hidden transition-all duration-300 ${
+          showOptions ? 'max-h-[350px] mt-4 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+        }`}
+      >
+        <div class="panel p-5 bg-slate-50/50 dark:bg-slate-900/30 backdrop-blur-sm border-dashed space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800/60 pb-3 mb-1">
+            <h4 class="text-sm font-bold text-[var(--color-foreground)]">Advanced Filters</h4>
+            <button
+              onClick={() => {
+                setPrefix('');
+                setSuffix('');
+                setContains('');
+                setGameMode('scrabble');
+                performSearch(input, { pref: '', suff: '', cont: '', game: 'scrabble' });
+              }}
+              class="text-xs font-bold text-red-600 dark:text-red-400 hover:underline cursor-pointer"
+            >
+              Reset Filters
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label for="prefix-input" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Starts With</label>
+              <input
+                id="prefix-input"
+                type="text"
+                value={prefix}
+                onInput={(e) => handlePrefixChange((e.target as HTMLInputElement).value)}
+                placeholder="e.g. S"
+                class="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-blue-500 rounded-xl text-sm"
+              />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="suffix-input" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Ends With</label>
+              <input
+                id="suffix-input"
+                type="text"
+                value={suffix}
+                onInput={(e) => handleSuffixChange((e.target as HTMLInputElement).value)}
+                placeholder="e.g. ING"
+                class="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-blue-500 rounded-xl text-sm"
+              />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="contains-input" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Must Include</label>
+              <input
+                id="contains-input"
+                type="text"
+                value={contains}
+                onInput={(e) => handleContainsChange((e.target as HTMLInputElement).value)}
+                placeholder="e.g. T"
+                class="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-blue-500 rounded-xl text-sm"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+            <div class="flex flex-col gap-1">
+              <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Game Scoring System</span>
+              <p class="text-[11px] text-[var(--color-muted)] font-medium">Recalculates letter values and resort matches by score.</p>
+            </div>
+            <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl w-fit border border-slate-200/50 dark:border-slate-700/50">
+              <button
+                onClick={() => handleGameModeChange('scrabble')}
+                class={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  gameMode === 'scrabble'
+                    ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800'
+                }`}
+              >
+                Scrabble
+              </button>
+              <button
+                onClick={() => handleGameModeChange('wwf')}
+                class={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  gameMode === 'wwf'
+                    ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800'
+                }`}
+              >
+                Words With Friends
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Stats Bar */}
       {result && totalWords > 0 && (
-        <div class="mt-4 grid grid-cols-3 gap-4 text-center">
+        <div class="mt-5 grid grid-cols-3 gap-4 text-center">
           <div class="panel p-4">
             <div class="text-3xl font-extrabold text-[var(--color-foreground)]">{totalWords}</div>
             <div class="text-xs text-[var(--color-muted)] font-bold uppercase tracking-wider mt-1">Total Words</div>
@@ -186,7 +390,7 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
       {result && totalWords === 0 && !error && (
         <div class="mt-12 text-center py-8 panel">
           <p class="text-[var(--color-foreground)] font-bold text-lg">No valid words found</p>
-          <p class="text-[var(--color-muted)] text-sm mt-1">Try adding different letters or check your spelling.</p>
+          <p class="text-[var(--color-muted)] text-sm mt-1">Try adding different letters or adjusting your filters.</p>
         </div>
       )}
 
@@ -225,7 +429,7 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
                         class="word-tile pl-4 pr-11 py-2.5 rounded-xl text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 transition-all hover:pr-12"
                         title={`View definition & details for ${word.word.toUpperCase()}`}
                       >
-                        <span class="uppercase tracking-wide font-extrabold">{word.word}</span>
+                        {renderWordWithWildcards(word.word, input)}
                         <span class="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-700 group-hover:bg-white flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400 transition-colors">
                           {word.score}
                         </span>

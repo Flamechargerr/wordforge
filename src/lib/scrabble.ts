@@ -5,6 +5,13 @@
 
 import { SCRABBLE_TILE_VALUES } from '../types/index.ts';
 
+/** Words with Friends tile values */
+export const WWF_TILE_VALUES: Record<string, number> = {
+  a: 1, b: 4, c: 4, d: 2, e: 1, f: 4, g: 3, h: 3, i: 1,
+  j: 10, k: 5, l: 2, m: 4, n: 2, o: 1, p: 4, q: 10, r: 1,
+  s: 1, t: 1, u: 2, v: 5, w: 4, x: 8, y: 4, z: 10,
+};
+
 /**
  * Calculate the Scrabble score for a word.
  * @param word - The word to score (case-insensitive)
@@ -16,6 +23,21 @@ export function calculateScrabbleScore(word: string): number {
   let score = 0;
   for (const ch of word.toLowerCase()) {
     score += SCRABBLE_TILE_VALUES[ch] ?? 0;
+  }
+  return score;
+}
+
+/**
+ * Calculate the Words With Friends score for a word.
+ * @param word - The word to score (case-insensitive)
+ * @returns The total tile score, or 0 for empty/invalid input
+ */
+export function calculateWWFScore(word: string): number {
+  if (!word || word.length === 0) return 0;
+
+  let score = 0;
+  for (const ch of word.toLowerCase()) {
+    score += WWF_TILE_VALUES[ch] ?? 0;
   }
   return score;
 }
@@ -60,12 +82,12 @@ export function canFormWord(word: string, available: Map<string, number>): boole
 }
 
 /**
- * Normalize input letters: lowercase, remove non-alphabetic characters.
+ * Normalize input letters: lowercase, keep a-z and wildcards (?, *, space).
  * @param input - Raw user input
  * @returns Cleaned letters
  */
 export function normalizeInput(input: string): string {
-  return input.toLowerCase().replace(/[^a-z]/g, '');
+  return input.toLowerCase().replace(/[^a-z?* ]/g, '');
 }
 
 /**
@@ -77,8 +99,9 @@ export function validateInput(input: string): { valid: boolean; error?: string }
   if (!input || input.length === 0) {
     return { valid: false, error: 'Please enter some letters' };
   }
-  if (input.length < 2) {
-    return { valid: false, error: 'Enter at least 2 letters' };
+  const letterOnlyLength = input.replace(/[?* ]/g, '').length;
+  if (letterOnlyLength < 2) {
+    return { valid: false, error: 'Enter at least 2 letters (wildcards do not count towards the 2-letter minimum)' };
   }
   if (input.length > 15) {
     return { valid: false, error: 'Maximum 15 letters allowed' };

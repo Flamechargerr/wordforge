@@ -76,6 +76,48 @@ describe('solve', () => {
       }
     }
   });
+
+  it('supports wildcards (?, *, space)', () => {
+    const result = solve(dictionary, 'list??');
+    const words = result.words.map((w) => w.word);
+    expect(words).toContain('silent');
+    expect(words).toContain('listen');
+    expect(words).toContain('tinsel');
+    expect(words).toContain('list');
+  });
+
+  it('supports prefix filter', () => {
+    const result = solve(dictionary, 'list??', { prefix: 'a' });
+    for (const w of result.words) {
+      expect(w.word.startsWith('a')).toBe(true);
+    }
+  });
+
+  it('supports suffix filter', () => {
+    const result = solve(dictionary, 'list??', { suffix: 's' });
+    for (const w of result.words) {
+      expect(w.word.endsWith('s')).toBe(true);
+    }
+  });
+
+  it('supports contains filter', () => {
+    const result = solve(dictionary, 'list??', { contains: 'e' });
+    for (const w of result.words) {
+      expect(w.word).toContain('e');
+    }
+  });
+
+  it('supports Words With Friends scoring and sorting', () => {
+    const resultScrabble = solve(dictionary, 'listen', { gameMode: 'scrabble' });
+    const resultWWF = solve(dictionary, 'listen', { gameMode: 'wwf' });
+    
+    const elScrabble = resultScrabble.words.find(w => w.word === 'el');
+    const elWWF = resultWWF.words.find(w => w.word === 'el');
+    if (elScrabble && elWWF) {
+      expect(elScrabble.score).toBe(2);
+      expect(elWWF.score).toBe(3);
+    }
+  });
 });
 
 describe('getAnagrams', () => {

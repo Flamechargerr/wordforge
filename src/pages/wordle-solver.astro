@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import WordleSolver from '../components/WordleSolver.tsx';
+
+const title = "Wordle Solver — Interactive Wordle Helper & Suggestion Tool";
+const description = "Solve daily Wordle puzzles instantly. Enter correct letters, present letters, and excluded letters to find every valid 5-letter suggestion.";
+const canonical = "https://wordforge.app/wordle-solver/";
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
+    
+    {/* Hero Section */}
+    <div class="text-center mb-12 sm:mb-16">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6">
+        Wordle Solver
+      </h1>
+      <p class="text-lg sm:text-xl text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed">
+        Narrow down your Wordle guesses. Enter your green, yellow, and gray letters below to get all valid matching 5-letter words.
+      </p>
+    </div>
+
+    {/* Solver Island */}
+    <section aria-label="Wordle solver tool" class="mb-16">
+      <WordleSolver client:only="preact" />
+    </section>
+
+    {/* How to use the Wordle Solver */}
+    <section class="mt-16 sm:mt-20 panel p-6 sm:p-8" aria-label="Wordle solver guide">
+      <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-[var(--color-foreground)]">How to Use the Wordle Solver</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm leading-relaxed">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-green-500" />
+            <h4 class="font-extrabold text-[var(--color-foreground)]">1. Green Letters</h4>
+          </div>
+          <p class="text-[var(--color-muted)]">
+            Type letters in the exact boxes where you know they go (e.g. if you know the word starts with <strong>A</strong>, enter <strong>A</strong> in the first square box).
+          </p>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+            <h4 class="font-extrabold text-[var(--color-foreground)]">2. Yellow Letters</h4>
+          </div>
+          <p class="text-[var(--color-muted)]">
+            Enter all letters that are highlighted yellow in your game. These are letters that exist in the word but are in a different spot.
+          </p>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-400" />
+            <h4 class="font-extrabold text-[var(--color-foreground)]">3. Gray Letters</h4>
+          </div>
+          <p class="text-[var(--color-muted)]">
+            Enter all letters that are gray/excluded in your game. The solver will automatically ignore these letters when generating suggestions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</Layout>

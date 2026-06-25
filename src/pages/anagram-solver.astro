@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Solver from '../components/Solver.tsx';
+
+const title = "Anagram Solver — Unscramble and Find Exact Anagrams";
+const description = "The ultimate anagram solver. Input letters to find all exact anagrams and words matching your letters. Zero ads, instant results, clean dictionary.";
+const canonical = "https://wordforge.app/anagram-solver/";
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
+    
+    {/* Hero Section */}
+    <div class="text-center mb-12 sm:mb-16">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6">
+        Anagram Solver
+      </h1>
+      <p class="text-lg sm:text-xl text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed">
+        Find exact anagrams that use every single letter you enter. Perfect for finding hidden anagram pairs and solving word games.
+      </p>
+    </div>
+
+    {/* Solver Island */}
+    <section aria-label="Anagram solver tool" class="mb-16">
+      <Solver client:only="preact" mode="anagram" />
+    </section>
+
+    {/* What is an Anagram Solver? */}
+    <section class="mt-16 sm:mt-20 panel p-6 sm:p-8" aria-label="About anagrams">
+      <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-[var(--color-foreground)]">What is an Anagram Solver?</h2>
+      <p class="text-[var(--color-muted)] leading-relaxed mb-4">
+        An <strong>anagram solver</strong> is a tool designed to find words formed by rearranging the exact letters of another word or phrase. Unlike general word unscramblers which find all smaller sub-words, an anagram solver searches for perfect rearrangements using 100% of the letters you input.
+      </p>
+      <p class="text-[var(--color-muted)] leading-relaxed">
+        For example, if you input the letters <strong>"listen"</strong>, a perfect anagram solver will return <strong>"silent"</strong> and <strong>"tinsel"</strong>. WordForge uses a optimized sorted-key algorithm to run these computations in your browser instantly.
+      </p>
+    </section>
+
+    {/* Frequently Asked Questions */}
+    <section class="mt-16 sm:mt-20" aria-label="Frequently asked questions">
+      <h2 class="text-2xl sm:text-3xl font-bold mb-8 text-[var(--color-foreground)]">Anagram Solver FAQs</h2>
+      <div class="space-y-4">
+        <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+          <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+            What is the difference between an anagram solver and a word unscrambler?
+            <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+          </summary>
+          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
+            A word unscrambler finds all possible words of <i>any</i> length that can be formed using a subset of your letters (e.g., entering "listen" returns "it", "sit", "lite", "silent"). An anagram solver only returns words of the <i>exact same length</i> that use all entered letters.
+          </div>
+        </details>
+        <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+          <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+            Does WordForge support multi-word anagrams?
+            <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+          </summary>
+          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
+            Currently, our solver matches single-word anagrams against our clean 120,000-word dictionary. This covers all valid Scrabble and dictionary words. Multi-word anagram solvers often generate billions of combinations of gibberish, which we filter out to maintain site speed and quality.
+          </div>
+        </details>
+      </div>
+    </section>
+
+  </div>
+</Layout>
