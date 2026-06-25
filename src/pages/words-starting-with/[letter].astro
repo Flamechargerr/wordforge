@@ -1,0 +1,95 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { createClientDictionary } from '../../lib/dictionary-client';
+import { getWordsStartingWith } from '../../lib/solver';
+
+export function getStaticPaths() {
+  return 'abcdefghijklmnopqrstuvwxyz'.split('').map(letter => ({
+    params: { letter },
+  }));
+}
+
+const { letter } = Astro.params;
+const lower = (letter ?? 'a').toLowerCase();
+const upper = lower.toUpperCase();
+
+const dictionary = createClientDictionary();
+const words = getWordsStartingWith(dictionary, lower);
+
+const title = `Words Starting With ${upper} | Scrabble & WWF Dictionary | WordForge`;
+const description = `Complete list of words starting with ${upper}. ${words.length} valid Scrabble and Words With Friends words beginning with ${upper}. Sort by length and score.`;
+const canonical = `https://wordforge.app/words-starting-with/${lower}/`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">Words Starting With {upper}</li>
+      </ol>
+    </nav>
+
+    <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-2">
+      Words Starting With <span class="text-[var(--color-accent)]">{upper}</span>
+    </h1>
+    <p class="text-[var(--color-muted)] mb-8">
+      {words.length} valid Scrabble and Words With Friends words starting with {upper}
+    </p>
+
+    <!-- Letter Navigation -->
+    <div class="flex flex-wrap justify-center gap-1.5 mb-8">
+      {'abcdefghijklmnopqrstuvwxyz'.split('').map(l => (
+        <a
+          href={`/words-starting-with/${l}/`}
+          class={`w-8 h-8 flex items-center justify-center rounded-lg font-semibold text-sm transition-colors ${
+            l === lower
+              ? 'bg-[var(--color-accent)] text-white'
+              : 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:border-[var(--color-accent)]'
+          }`}
+        >
+          {l.toUpperCase()}
+        </a>
+      ))}
+    </div>
+
+    <!-- Word Counts by Length -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+      {Array.from(new Set(words.map(w => w.length))).sort((a, b) => a - b).map(len => {
+        const count = words.filter(w => w.length === len).length;
+        return (
+          <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-3 text-center">
+            <div class="text-xl font-bold text-[var(--color-accent)]">{count}</div>
+            <div class="text-xs text-[var(--color-muted)]">{len}-Letter Words</div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Words by Length -->
+    <div class="space-y-6">
+      {Array.from(new Set(words.map(w => w.length))).sort((a, b) => a - b).map(len => {
+        const group = words.filter(w => w.length === len);
+        return (
+          <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5">
+            <h2 class="font-semibold text-[var(--color-foreground)] mb-3">{len}-Letter Words Starting With {upper}</h2>
+            <div class="flex flex-wrap gap-2">
+              {group.slice(0, 50).map(word => (
+                <a
+                  href={`/unscramble/${word}/`}
+                  class="px-2.5 py-1.5 bg-[var(--color-background)] hover:bg-[var(--color-accent-subtle)] border border-[var(--color-border)] hover:border-[var(--color-accent)] rounded-lg text-sm transition-colors uppercase tracking-wide text-[var(--color-foreground)]"
+                >
+                  {word}
+                </a>
+              ))}
+              {group.length > 50 && (
+                <span class="px-2.5 py-1.5 text-sm text-[var(--color-muted)]">+{group.length - 50} more</span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</Layout>

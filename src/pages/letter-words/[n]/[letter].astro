@@ -1,0 +1,82 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { createClientDictionary } from '../../../lib/dictionary-client';
+import { getWordsByLengthAndStartingLetter } from '../../../lib/solver';
+
+export function getStaticPaths() {
+  const paths: { params: { n: string; letter: string } }[] = [];
+  for (let n = 2; n <= 8; n++) {
+    for (const letter of 'abcdefghijklmnopqrstuvwxyz') {
+      paths.push({ params: { n: String(n), letter } });
+    }
+  }
+  return paths;
+}
+
+const { n, letter } = Astro.params;
+const numN = Number(n);
+const lower = (letter ?? 'a').toLowerCase();
+const upper = lower.toUpperCase();
+
+const dictionary = createClientDictionary();
+const words = getWordsByLengthAndStartingLetter(dictionary, numN, lower);
+
+const title = `${n}-Letter Words Starting With ${upper} | Scrabble Dictionary | WordForge`;
+const description = `Complete list of ${n}-letter words starting with ${upper}. ${words.length} valid Scrabble and Words With Friends words.`;
+const canonical = `https://wordforge.app/letter-words/${n}/${lower}/`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href={`/words-starting-with/${lower}/`} class="hover:text-[var(--color-foreground)] transition-colors">Words Starting With {upper}</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">{n}-Letter Words</li>
+      </ol>
+    </nav>
+
+    <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-2">
+      {n}-Letter Words Starting With <span class="text-[var(--color-accent)]">{upper}</span>
+    </h1>
+    <p class="text-[var(--color-muted)] mb-8">
+      {words.length} valid {n}-letter Scrabble and Words With Friends words starting with {upper}
+    </p>
+
+    <!-- Length Navigation -->
+    <div class="flex flex-wrap justify-center gap-2 mb-8">
+      {Array.from({ length: 7 }, (_, i) => i + 2).map(len => (
+        <a
+          href={`/letter-words/${len}/${lower}/`}
+          class={`px-3 py-1.5 rounded-lg font-medium text-sm transition-colors ${
+            len === numN
+              ? 'bg-[var(--color-accent)] text-white'
+              : 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+          }`}
+        >
+          {len} Letters
+        </a>
+      ))}
+    </div>
+
+    <!-- Words Grid -->
+    <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5">
+      {words.length > 0 ? (
+        <div class="flex flex-wrap gap-2">
+          {words.map(word => (
+            <a
+              href={`/unscramble/${word}/`}
+              class="px-3 py-2 bg-[var(--color-background)] hover:bg-[var(--color-accent-subtle)] border border-[var(--color-border)] hover:border-[var(--color-accent)] rounded-lg text-sm font-medium transition-colors uppercase tracking-wide text-[var(--color-foreground)]"
+            >
+              {word}
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="text-[var(--color-muted)] text-center py-8">No {n}-letter words found starting with {upper}.</p>
+      )}
+    </div>
+  </div>
+</Layout>

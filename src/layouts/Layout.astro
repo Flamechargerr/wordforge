@@ -1,0 +1,183 @@
+---
+/**
+ * Main layout for WordForge.
+ * Provides SEO meta tags, schema markup, and the page shell.
+ * Zero JavaScript by default — only the solver island hydrates.
+ */
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = "WordForge — Unscramble Any Letters Into Valid Words",
+  description = "The fastest word unscrambler on the internet. Enter scrambled letters and instantly discover every valid Scrabble and Words With Friends word. 370,000+ word dictionary.",
+  canonical = "https://wordforge.app/",
+  ogImage = "https://wordforge.app/og-image.png",
+  noindex = false,
+} = Astro.props;
+
+const siteName = "WordForge";
+const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f0f0f" media="(prefers-color-scheme: dark)" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content={siteName} />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Preconnect to external domains (none in V1, but prepared) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- JSON-LD: WebApplication -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        name: siteName,
+        description: description,
+        url: canonical,
+        applicationCategory: "UtilityApplication",
+        operatingSystem: "Any",
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "USD",
+        },
+        featureList:
+          "Unscramble letters, Scrabble word finder, Anagram solver, Words With Friends helper, Sort by length or score",
+        softwareVersion: "1.0.0",
+        author: {
+          "@type": "Organization",
+          name: siteName,
+        },
+      })}
+    />
+
+    <!-- JSON-LD: FAQPage (only on homepage) -->
+    {
+      Astro.url.pathname === "/" && (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "What is a word unscrambler?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "A word unscrambler is a tool that takes a set of scrambled letters and finds all valid dictionary words that can be formed from them. It uses an anagram algorithm to check every possible combination against a dictionary of valid words.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Is WordForge free to use?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes, WordForge is completely free to use. No signup, no download, no ads. Just enter your letters and get instant results.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "How many words are in the WordForge dictionary?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "WordForge's dictionary contains over 370,000 valid English words, including common words, Scrabble-valid words, and Words With Friends dictionary terms.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Can I use WordForge for Scrabble?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Absolutely. WordForge is perfect for Scrabble and Words With Friends. Every result shows the Scrabble tile score, and you can sort by score to find the highest-value plays.",
+                },
+              },
+            ],
+          })}
+        />
+      )
+    }
+  </head>
+
+  <body class="min-h-[100dvh] flex flex-col">
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-accent focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
+      Skip to main content
+    </a>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-[var(--color-surface)]/80 backdrop-blur-md border-b border-[var(--color-border)]">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+        <a href="/" class="text-lg font-semibold tracking-tight text-[var(--color-foreground)] hover:text-[var(--color-accent)] transition-colors" aria-label="WordForge Home">
+          WordForge
+        </a>
+        <nav aria-label="Main navigation">
+          <ul class="flex items-center gap-6 text-sm">
+            <li>
+              <a href="/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Unscramble</a>
+            </li>
+            <li>
+              <a href="/about" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">About</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-[var(--color-border)] mt-16">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[var(--color-muted)]">
+          <p>WordForge — Unscramble any letters into valid words.</p>
+          <nav aria-label="Footer navigation">
+            <ul class="flex items-center gap-4">
+              <li><a href="/privacy" class="hover:text-[var(--color-foreground)] transition-colors">Privacy</a></li>
+              <li><a href="/terms" class="hover:text-[var(--color-foreground)] transition-colors">Terms</a></li>
+              <li><a href="/contact" class="hover:text-[var(--color-foreground)] transition-colors">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

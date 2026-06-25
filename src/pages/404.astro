@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = "Page Not Found | WordForge";
+const description = "The page you are looking for does not exist. Try using the WordForge word unscrambler instead.";
+---
+
+<Layout title={title} description={description} noindex>
+  <div class="max-w-xl mx-auto px-4 sm:px-6 py-24 text-center">
+    <h1 class="text-8xl font-bold text-[var(--color-border)] mb-4">404</h1>
+    <h2 class="text-2xl font-semibold text-[var(--color-foreground)] mb-4">Page not found</h2>
+    <p class="text-[var(--color-muted)] mb-8">
+      The page you are looking for does not exist. Try using the word unscrambler instead.
+    </p>
+    <a
+      href="/"
+      class="inline-flex items-center px-6 py-3 bg-[var(--color-accent)] text-white font-medium rounded-xl hover:bg-[var(--color-accent-hover)] transition-colors"
+    >
+      Go to WordForge
+    </a>
+  </div>
+</Layout>

@@ -1,0 +1,151 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Solver from '../components/Solver.tsx';
+
+const title = "WordForge — Unscramble Any Letters Into Valid Words";
+const description = "The fastest word unscrambler on the internet. Enter scrambled letters and instantly discover every valid Scrabble and Words With Friends word. 370,000+ word dictionary, zero ads, instant results.";
+---
+
+<Layout title={title} description={description}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    
+    {/* Hero Section */}
+    <div class="text-center mb-10 sm:mb-14">
+      <h1 class="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--color-foreground)] text-balance mb-4">
+        Unscramble Any Letters
+      </h1>
+      <p class="text-lg sm:text-xl text-[var(--color-muted)] max-w-xl mx-auto text-balance">
+        Enter up to 12 letters and instantly discover every valid word. 
+        Perfect for Scrabble, Words With Friends, and anagrams.
+      </p>
+    </div>
+
+    {/* Solver Island */}
+    <section aria-label="Word unscrambler tool">
+      <Solver client:only="preact" />
+    </section>
+
+    {/* Features */}
+    <section class="mt-16 sm:mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6" aria-label="Features">
+      <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 text-center">
+        <div class="w-10 h-10 mx-auto mb-3 rounded-lg bg-[var(--color-accent-subtle)] flex items-center justify-center text-[var(--color-accent)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3 class="font-semibold text-[var(--color-foreground)] mb-1">Lightning Fast</h3>
+        <p class="text-sm text-[var(--color-muted)]">Sub-100ms solving. Results appear as you type — no button needed.</p>
+      </div>
+      <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 text-center">
+        <div class="w-10 h-10 mx-auto mb-3 rounded-lg bg-[var(--color-accent-subtle)] flex items-center justify-center text-[var(--color-accent)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <h3 class="font-semibold text-[var(--color-foreground)] mb-1">Scrabble Scores</h3>
+        <p class="text-sm text-[var(--color-muted)]">Every word shows its tile score. Find the highest-value play instantly.</p>
+      </div>
+      <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 text-center">
+        <div class="w-10 h-10 mx-auto mb-3 rounded-lg bg-[var(--color-accent-subtle)] flex items-center justify-center text-[var(--color-accent)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <h3 class="font-semibold text-[var(--color-foreground)] mb-1">370,000+ Words</h3>
+        <p class="text-sm text-[var(--color-muted)]">Comprehensive dictionary covering Scrabble, WWF, and common English.</p>
+      </div>
+    </section>
+
+    {/* SEO Content: What is a word unscrambler? */}
+    <section class="mt-16 sm:mt-20 prose prose-sm sm:prose-base max-w-none text-[var(--color-foreground)]" aria-label="About word unscramblers">
+      <h2 class="text-2xl font-bold mb-4">What is a Word Unscrambler?</h2>
+      <p class="text-[var(--color-muted)] leading-relaxed">
+        A <strong>word unscrambler</strong> is a tool that takes a set of scrambled letters and finds all valid dictionary words that can be formed from them. Whether you are stuck on a Scrabble rack, trying to solve a crossword anagram, or just playing Words With Friends, a word unscrambler helps you see every possible word instantly.
+      </p>
+      <p class="text-[var(--color-muted)] leading-relaxed">
+        WordForge uses a <strong>sorted-key algorithm</strong> that indexes every word by its letter signature. When you type your letters, we generate all possible subset signatures and look them up in under 100 milliseconds. No brute-force permutations, no server delays — everything happens in your browser.
+      </p>
+    </section>
+
+    {/* How to Use */}
+    <section class="mt-12 sm:mt-16" aria-label="How to use WordForge">
+      <h2 class="text-2xl font-bold mb-6 text-[var(--color-foreground)]">How to Use WordForge</h2>
+      <ol class="space-y-4">
+        <li class="flex gap-4 items-start">
+          <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-accent)] text-white flex items-center justify-center font-bold text-sm">1</span>
+          <div>
+            <p class="font-medium text-[var(--color-foreground)]">Type your letters</p>
+            <p class="text-sm text-[var(--color-muted)]">Enter up to 12 scrambled letters in the search box above. No need to press a button — results appear instantly.</p>
+          </div>
+        </li>
+        <li class="flex gap-4 items-start">
+          <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-accent)] text-white flex items-center justify-center font-bold text-sm">2</span>
+          <div>
+            <p class="font-medium text-[var(--color-foreground)]">Browse results</p>
+            <p class="text-sm text-[var(--color-muted)]">Words are grouped by length, from longest to shortest. Each word shows its Scrabble tile score.</p>
+          </div>
+        </li>
+        <li class="flex gap-4 items-start">
+          <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-accent)] text-white flex items-center justify-center font-bold text-sm">3</span>
+          <div>
+            <p class="font-medium text-[var(--color-foreground)]">Copy and play</p>
+            <p class="text-sm text-[var(--color-muted)]">Click any word to copy it to your clipboard. Paste it into your game or puzzle.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    {/* Popular Searches */}
+    <section class="mt-12 sm:mt-16" aria-label="Popular searches">
+      <h2 class="text-2xl font-bold mb-4 text-[var(--color-foreground)]">Popular Searches</h2>
+      <div class="flex flex-wrap gap-2">
+        {['listen', 'triangle', 'silent', 'anagram', 'scramble', 'letters', 'words', 'friends', 'scrabble', 'solver'].map((word) => (
+          <a
+            href={`/unscramble/${word}`}
+            class="px-3 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] rounded-lg text-sm text-[var(--color-muted)] transition-colors"
+          >
+            Unscramble {word}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {/* FAQ Section */}
+    <section class="mt-12 sm:mt-16" aria-label="Frequently asked questions">
+      <h2 class="text-2xl font-bold mb-6 text-[var(--color-foreground)]">Frequently Asked Questions</h2>
+      <div class="space-y-6">
+        <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+          <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+            How many words can WordForge find?
+            <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+          </summary>
+          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
+            WordForge's dictionary contains over 370,000 valid English words. From a typical 6-letter input like "listen", we find 30+ words ranging from 2 to 6 letters long. From 8 letters like "triangle", we find 600+ words.
+          </div>
+        </details>
+        <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+          <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+            Is WordForge free?
+            <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+          </summary>
+          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
+            Yes, WordForge is completely free. No signup, no download, no ads, no paywall. We believe word tools should be accessible to everyone.
+          </div>
+        </details>
+        <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+          <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+            Can I use this for Scrabble and Words With Friends?
+            <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+          </summary>
+          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
+            Absolutely. WordForge is perfect for Scrabble and Words With Friends. Every result shows the standard Scrabble tile score, and you can sort by score to find the highest-value plays. Our dictionary covers the most common English words used in word games.
+          </div>
+        </details>
+        <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+          <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+            How fast is the solver?
+            <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+          </summary>
+          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
+            Our sorted-key algorithm solves in under 100 milliseconds, even for 12-letter inputs. The entire solver runs client-side in your browser, so there is no server delay and no network request.
+          </div>
+        </details>
+      </div>
+    </section>
+
+  </div>
+</Layout>

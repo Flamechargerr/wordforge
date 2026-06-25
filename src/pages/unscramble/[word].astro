@@ -1,0 +1,183 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { createClientDictionary } from '../../lib/dictionary-client';
+import { solve, getAnagrams } from '../../lib/solver';
+import { TOP_WORDS } from '../../lib/top-words';
+
+export function getStaticPaths() {
+  // Curated common words people actually search for, mixed with top words
+  const COMMON_WORDS = [
+    'listen', 'silent', 'triangle', 'anagram', 'cinema', 'iceman',
+    'dormitory', 'dirtyroom', 'astronomer', 'moonstarrer', 'schoolmaster',
+    'theclassroom', 'conversation', 'desperation', 'motherinlaw', 'womanhitler',
+    'funeral', 'realfun', 'customer', 'restful', 'fluster', 'adobe', 'abode',
+    'heart', 'earth', 'stone', 'notes', 'alert', 'alter', 'least', 'stale',
+    'live', 'evil', 'veil', 'race', 'care', 'acre', 'tear', 'rate', 'baker',
+    'brake', 'break', 'angel', 'angle', 'glean', 'range', 'anger', 'paste',
+    'spate', 'stops', 'spots', 'posts', 'steer', 'reset', 'trees', 'melon',
+    'lemon', 'among', 'mango', 'horse', 'shore', 'ropes', 'spore', 'pores',
+    'arose', 'soare', 'arise', 'raise', 'arose', 'solar', 'trail', 'trial',
+    'ideal', 'dealt', 'delta', 'lated', 'lapse', 'pales', 'peals', 'pleas',
+    'sepal', 'salep', 'plates', 'petals', 'pleats', 'staple', 'lasted',
+    'slated', 'salted', 'crates', 'caters', 'caster', 'cartes', 'carets',
+    'recast', 'traces', 'reacts', 'react', 'trace', 'cater', 'crate', 'carte',
+    'caret', 'recta', 'earth', 'heart', 'hater', 'stare', 'rates', 'tears',
+    'tares', 'aster', 'resat', 'least', 'slate', 'steal', 'stale', 'tales',
+    'teals',
+  ];
+
+  const allTargets = [...new Set([...COMMON_WORDS, ...TOP_WORDS.slice(0, 500)])];
+  return allTargets.slice(0, 500).map(word => ({
+    params: { word: word.toLowerCase() },
+  }));
+}
+
+const { word } = Astro.params;
+const cleanWord = (word ?? '').toLowerCase().replace(/[^a-z]/g, '');
+
+const dictionary = createClientDictionary();
+const results = solve(dictionary, cleanWord);
+const anagrams = getAnagrams(dictionary, cleanWord);
+const maxLength = results.words.length > 0 ? Math.max(...results.words.map(w => w.length)) : 0;
+const longestWords = results.words.filter(w => w.length === maxLength);
+const highestScore = results.words.length > 0 ? Math.max(...results.words.map(w => w.score)) : 0;
+const bestWords = results.words.filter(w => w.score === highestScore);
+
+const title = `Unscramble ${cleanWord.toUpperCase()} → Words & Answers | WordForge`;
+const description = `Unscramble ${cleanWord.toUpperCase()} and find all valid words. ${results.words.length} words found, including ${longestWords.slice(0, 3).map(w => w.word).join(', ')}. Solve word puzzles, Scrabble, and Words With Friends.`;
+const canonical = `https://wordforge.app/unscramble/${cleanWord}/`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <!-- Breadcrumbs -->
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Unscramble</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">{cleanWord.toUpperCase()}</li>
+      </ol>
+    </nav>
+
+    <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-2">
+      Unscramble <span class="text-[var(--color-accent)]">{cleanWord.toUpperCase()}</span>
+    </h1>
+    <p class="text-[var(--color-muted)] mb-8">
+      Found {results.words.length} valid words from "{cleanWord.toUpperCase()}"
+    </p>
+
+    <!-- Stats -->
+    {results.words.length > 0 && (
+      <div class="grid grid-cols-3 gap-3 mb-8">
+        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-[var(--color-foreground)]">{results.words.length}</div>
+          <div class="text-xs text-[var(--color-muted)] uppercase tracking-wide">Total Words</div>
+        </div>
+        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-[var(--color-accent)]">{maxLength}</div>
+          <div class="text-xs text-[var(--color-muted)] uppercase tracking-wide">Longest</div>
+          <div class="text-xs text-[var(--color-muted)] mt-1">{longestWords.slice(0, 2).map(w => w.word).join(', ')}</div>
+        </div>
+        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-[var(--color-success)]">{highestScore}</div>
+          <div class="text-xs text-[var(--color-muted)] uppercase tracking-wide">Best Score</div>
+          <div class="text-xs text-[var(--color-muted)] mt-1">{bestWords.slice(0, 2).map(w => w.word).join(', ')}</div>
+        </div>
+      </div>
+    )}
+
+    <!-- Results by Length -->
+    {results.words.length > 0 ? (
+      <div class="space-y-4">
+        {Array.from(new Set(results.words.map(w => w.length))).sort((a, b) => b - a).map(length => {
+          const group = results.words.filter(w => w.length === length);
+          return (
+            <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl overflow-hidden">
+              <div class="px-4 py-3 bg-[var(--color-accent-subtle)] border-b border-[var(--color-border)] flex items-center justify-between">
+                <h2 class="font-semibold text-sm text-[var(--color-foreground)]">{length} Letter{length !== 1 ? 's' : ''}</h2>
+                <span class="text-xs text-[var(--color-muted)]">{group.length} word{group.length !== 1 ? 's' : ''}</span>
+              </div>
+              <div class="p-4">
+                <div class="flex flex-wrap gap-2">
+                  {group.map(word => (
+                    <span class="px-3 py-2 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg text-sm font-medium uppercase tracking-wide text-[var(--color-foreground)]">
+                      {word.word}
+                      <span class="ml-1.5 text-xs text-[var(--color-muted)]">{word.score}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="text-center py-12 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+        <p class="text-[var(--color-muted)] text-lg">No valid words found from "{cleanWord.toUpperCase()}"</p>
+        <p class="text-[var(--color-muted)] text-sm mt-1">Try different letters or check your spelling.</p>
+      </div>
+    )}
+
+    <!-- Anagrams -->
+    {anagrams.length > 0 && (
+      <div class="mt-8 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-6">
+        <h2 class="text-xl font-bold text-[var(--color-foreground)] mb-4">Anagrams of {cleanWord.toUpperCase()}</h2>
+        <div class="flex flex-wrap gap-2">
+          {anagrams.map(anagram => (
+            <a
+              href={`/unscramble/${anagram}/`}
+              class="px-3 py-2 bg-[var(--color-accent-subtle)] hover:bg-[var(--color-accent)] hover:text-white border border-[var(--color-border)] rounded-lg text-sm font-medium transition-colors"
+            >
+              {anagram.toUpperCase()}
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- FAQ -->
+    <div class="mt-8 space-y-4">
+      <h2 class="text-xl font-bold text-[var(--color-foreground)]">Frequently Asked Questions</h2>
+      <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+        <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+          How many words can you make from {cleanWord.toUpperCase()}?
+          <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+        </summary>
+        <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
+          From the letters "{cleanWord.toUpperCase()}", you can make <strong>{results.words.length} valid words</strong>.
+        </div>
+      </details>
+      <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+        <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+          What is the longest word from {cleanWord.toUpperCase()}?
+          <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+        </summary>
+        <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
+          The longest word from "{cleanWord.toUpperCase()}" is {longestWords[0]?.word.toUpperCase()} ({maxLength} letters).
+        </div>
+      </details>
+      <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+        <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+          What is the highest-scoring word from {cleanWord.toUpperCase()}?
+          <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+        </summary>
+        <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
+          The highest-scoring Scrabble word from "{cleanWord.toUpperCase()}" is "{bestWords[0]?.word.toUpperCase()}" worth <strong>{highestScore} points</strong>.
+        </div>
+      </details>
+      {anagrams.length > 0 && (
+        <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+          <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+            What are the anagrams of {cleanWord.toUpperCase()}?
+            <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+          </summary>
+          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
+            The anagrams of "{cleanWord.toUpperCase()}" are: {anagrams.slice(0, 10).map(a => a.toUpperCase()).join(', ')}.
+          </div>
+        </details>
+      )}
+    </div>
+  </div>
+</Layout>

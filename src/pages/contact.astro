@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = "Contact | WordForge";
+const description = "Contact the WordForge team. Send feedback, report bugs, or suggest features.";
+---
+
+<Layout title={title} description={description} canonical="https://wordforge.app/contact/" noindex>
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">Contact</h1>
+
+    <div class="prose prose-sm max-w-none text-[var(--color-muted)] space-y-4">
+      <p>
+        We would love to hear from you. Whether you have feedback, found a bug, or want to suggest a new feature, your input helps us make WordForge better.
+      </p>
+
+      <h2 class="text-lg font-semibold text-[var(--color-foreground)] mt-6">Email</h2>
+      <p>
+        Send us an email at <a href="mailto:hello@wordforge.app" class="text-[var(--color-accent)] hover:underline">hello@wordforge.app</a>. We typically respond within 24-48 hours.
+      </p>
+
+      <h2 class="text-lg font-semibold text-[var(--color-foreground)] mt-6">Before You Contact</h2>
+      <ul class="list-disc pl-5 space-y-1">
+        <li>Found a missing word? Our dictionary is based on public domain word lists. Some proper nouns and very recent words may not be included.</li>
+        <li>Is the solver not working? Try refreshing the page or clearing your browser cache.</li>
+      </ul>
+    </div>
+  </div>
+</Layout>

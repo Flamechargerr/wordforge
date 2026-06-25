@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = "About WordForge";
+const description = "Learn about WordForge — the fastest, cleanest word unscrambler on the internet. Built for Scrabble, Words With Friends, and word puzzle enthusiasts.";
+---
+
+<Layout title={title} description={description} canonical="https://wordforge.app/about/">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">About WordForge</h1>
+    
+    <div class="prose prose-sm sm:prose-base max-w-none text-[var(--color-muted)] space-y-4">
+      <p>
+        WordForge is a word unscrambler built for people who love word games. We created it because existing tools were slow, cluttered with ads, and frustrating to use. We believed there was room for something faster, cleaner, and more focused.
+      </p>
+      
+      <h2 class="text-xl font-semibold text-[var(--color-foreground)] mt-8 mb-3">Why We Built This</h2>
+      <p>
+        Most word unscramblers on the internet are surrounded by advertisements, pop-ups, and unnecessary features. They load slowly, the interfaces are confusing, and the user experience is an afterthought. We wanted to build the opposite: a tool that is fast enough to feel instant, clean enough to not distract from the task, and focused enough to solve one problem perfectly.
+      </p>
+      
+      <h2 class="text-xl font-semibold text-[var(--color-foreground)] mt-8 mb-3">How It Works</h2>
+      <p>
+        WordForge uses a <strong>sorted-key index</strong> — a pre-computed mapping of every possible letter signature to the words that match it. When you type your letters, we generate all possible subset signatures and look them up in constant time. This means the solver runs in under 100 milliseconds, entirely in your browser, with no server request.
+      </p>
+      <p>
+        Our dictionary contains over 370,000 valid English words, covering common vocabulary, Scrabble-valid terms, and Words With Friends dictionary words. We source our word lists from public domain collections like the ENABLE word list and the SCOWL project.
+      </p>
+      
+      <h2 class="text-xl font-semibold text-[var(--color-foreground)] mt-8 mb-3">Who Uses WordForge?</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li><strong>Scrabble players</strong> looking for high-scoring plays from their rack</li>
+        <li><strong>Words With Friends</strong> enthusiasts trying to find the best word</li>
+        <li><strong>Crossword solvers</strong> stuck on an anagram clue</li>
+        <li><strong>Students</strong> learning vocabulary and spelling patterns</li>
+        <li><strong>Puzzle enthusiasts</strong> solving Jumble, cryptograms, and anagrams</li>
+        <li><strong>Teachers</strong> creating word games and classroom activities</li>
+      </ul>
+      
+      <h2 class="text-xl font-semibold text-[var(--color-foreground)] mt-8 mb-3">Contact</h2>
+      <p>
+        Have feedback, found a bug, or want to suggest a feature? We would love to hear from you. Reach out via our <a href="/contact" class="text-[var(--color-accent)] hover:underline">Contact page</a>.
+      </p>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = "DMCA Policy | WordForge";
+const description = "WordForge's DMCA policy.";
+---
+
+<Layout title={title} description={description} canonical="https://wordforge.app/dmca/" noindex>
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">DMCA Policy</h1>
+
+    <div class="prose prose-sm max-w-none text-[var(--color-muted)] space-y-4">
+      <p>
+        WordForge respects intellectual property rights. If you believe that content on our site infringes your copyright, please contact us.
+      </p>
+
+      <h2 class="text-lg font-semibold text-[var(--color-foreground)] mt-6">Notice Requirements</h2>
+      <p>
+        To file a DMCA notice, please provide:
+      </p>
+      <ul class="list-disc pl-5 space-y-1">
+        <li>Your contact information (name, email, address).</li>
+        <li>Identification of the copyrighted work claimed to have been infringed.</li>
+        <li>Identification of the material that is claimed to be infringing.</li>
+        <li>A statement that you have a good faith belief that the use is not authorized.</li>
+        <li>A statement that the information in the notification is accurate.</li>
+      </ul>
+
+      <h2 class="text-lg font-semibold text-[var(--color-foreground)] mt-6">Contact</h2>
+      <p>
+        Send DMCA notices to <a href="mailto:hello@wordforge.app" class="text-[var(--color-accent)] hover:underline">hello@wordforge.app</a>.
+      </p>
+    </div>
+  </div>
+</Layout>
