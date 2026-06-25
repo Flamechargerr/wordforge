@@ -5,7 +5,7 @@
  * Zero JavaScript by default — only the solver island hydrates.
  */
 
-import { SITE_URL } from '../config';
+import { SITE_URL, ENABLE_ADS, ADSENSE_CLIENT } from '../config';
 import '../styles/global.css';
 
 interface BreadcrumbItem {
@@ -34,18 +34,36 @@ const {
 const siteName = "WordForge";
 const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
 
+// Filter out redundant "Home" or root links from the passed breadcrumbs array
+const cleanBreadcrumbs = breadcrumbs.filter(crumb => {
+  const name = crumb.name.trim().toLowerCase();
+  const url = crumb.url?.trim().toLowerCase() || '';
+  return name !== 'home' && url !== '/' && url !== '' && url !== SITE_URL.toLowerCase() && url !== `${SITE_URL.toLowerCase()}/`;
+});
+
 // Build BreadcrumbList schema (always includes Home)
-const breadcrumbSchema = breadcrumbs.length > 0 ? {
+const breadcrumbSchema = cleanBreadcrumbs.length > 0 ? {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
     { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-    ...breadcrumbs.map((crumb, i) => ({
-      "@type": "ListItem",
-      position: i + 2,
-      name: crumb.name,
-      ...(crumb.url ? { item: `${SITE_URL}${crumb.url}` } : {}),
-    })),
+    ...cleanBreadcrumbs.map((crumb, i) => {
+      let itemUrl = crumb.url || '';
+      if (itemUrl) {
+        if (!itemUrl.startsWith('http://') && !itemUrl.startsWith('https://')) {
+          if (!itemUrl.startsWith('/')) {
+            itemUrl = '/' + itemUrl;
+          }
+          itemUrl = `${SITE_URL}${itemUrl}`;
+        }
+      }
+      return {
+        "@type": "ListItem",
+        position: i + 2,
+        name: crumb.name,
+        ...(itemUrl ? { item: itemUrl } : {}),
+      };
+    }),
   ],
 } : null;
 
@@ -185,6 +203,15 @@ const navSchema = {
               },
             ],
           })}
+        />
+      )
+    }
+    {
+      ENABLE_ADS && (
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          crossorigin="anonymous"
         />
       )
     }

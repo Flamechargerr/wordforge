@@ -1,15 +1,28 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import WordleSolver from '../components/WordleSolver.tsx';
+import AdSlot from '../components/AdSlot.astro';
 import { SITE_URL } from '../config';
 
 const title = "Wordle Solver — Interactive Wordle Helper & Suggestion Tool";
 const description = "Solve daily Wordle puzzles instantly. Enter correct letters, present letters, and excluded letters to find every valid 5-letter suggestion.";
 const canonical = `${SITE_URL}/wordle-solver/`;
+
+const breadcrumbs = [
+  { name: "Wordle Helper", url: "/wordle-solver/" }
+];
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
+<Layout title={title} description={description} canonical={canonical} breadcrumbs={breadcrumbs}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <!-- Breadcrumbs -->
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">Wordle Helper</li>
+      </ol>
+    </nav>
     
     {/* Hero Section */}
     <div class="text-center mb-12 sm:mb-16">
@@ -24,6 +37,7 @@ const canonical = `${SITE_URL}/wordle-solver/`;
     {/* Solver Island */}
     <section aria-label="Wordle solver tool" class="mb-16">
       <WordleSolver client:only="preact" />
+      <AdSlot slot="wordle-solver-below-solver" />
     </section>
 
     {/* How to use the Wordle Solver */}

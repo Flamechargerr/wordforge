@@ -1,13 +1,27 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { SITE_URL } from '../config';
 
 const title = "About WordForge";
 const description = "Learn about WordForge — the fastest, cleanest word unscrambler on the internet. Built for Scrabble, Words With Friends, and word puzzle enthusiasts.";
+
+const breadcrumbs = [
+  { name: "About", url: "/about/" }
+];
 ---
 
-<Layout title={title} description={description} canonical={`${SITE_URL}/about/`}>
+<Layout title={title} description={description} canonical={`${SITE_URL}/about/`} breadcrumbs={breadcrumbs}>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <!-- Breadcrumb HTML navigation -->
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">About</li>
+      </ol>
+    </nav>
+
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">About WordForge</h1>
     
     <div class="prose prose-sm sm:prose-base max-w-none text-[var(--color-muted)] space-y-4">
@@ -37,6 +51,8 @@ const description = "Learn about WordForge — the fastest, cleanest word unscra
         <li><strong>Puzzle enthusiasts</strong> solving Jumble, cryptograms, and anagrams</li>
         <li><strong>Teachers</strong> creating word games and classroom activities</li>
       </ul>
+
+      <AdSlot slot="about-page" />
       
       <h2 class="text-xl font-semibold text-[var(--color-foreground)] mt-8 mb-3">Contact</h2>
       <p>

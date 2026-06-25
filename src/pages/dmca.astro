@@ -1,13 +1,27 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { SITE_URL, CONTACT_EMAIL } from '../config';
 
 const title = "DMCA Policy | WordForge";
 const description = "WordForge's DMCA policy.";
+
+const breadcrumbs = [
+  { name: "DMCA Policy", url: "/dmca/" }
+];
 ---
 
-<Layout title={title} description={description} canonical={`${SITE_URL}/dmca/`} noindex>
+<Layout title={title} description={description} canonical={`${SITE_URL}/dmca/`} breadcrumbs={breadcrumbs} noindex>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <!-- Breadcrumb HTML navigation -->
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">DMCA Policy</li>
+      </ol>
+    </nav>
+
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">DMCA Policy</h1>
 
     <div class="prose prose-sm max-w-none text-[var(--color-muted)] space-y-4">
@@ -19,7 +33,7 @@ const description = "WordForge's DMCA policy.";
       <p>
         To file a DMCA notice, please provide:
       </p>
-      <ul class="list-disc pl-5 space-y-1">
+      <ul class="list-disc pl-5 space-y-1 bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-200/50 dark:border-slate-800/50">
         <li>Your contact information (name, email, address).</li>
         <li>Identification of the copyrighted work claimed to have been infringed.</li>
         <li>Identification of the material that is claimed to be infringing.</li>
@@ -31,6 +45,8 @@ const description = "WordForge's DMCA policy.";
       <p>
         Send DMCA notices to <a href={`mailto:${CONTACT_EMAIL}`} class="text-[var(--color-accent)] hover:underline">{CONTACT_EMAIL}</a>.
       </p>
+
+      <AdSlot slot="dmca-page" />
     </div>
   </div>
 </Layout>

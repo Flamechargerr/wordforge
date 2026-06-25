@@ -4,6 +4,7 @@
  * Wraps the main Layout with a reading-optimized container.
  */
 import Layout from './Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { SITE_URL } from '../config';
 
 interface Props {
@@ -25,9 +26,8 @@ const {
 } = Astro.props;
 
 const breadcrumbs = [
-  { name: 'Home', url: `${SITE_URL}/` },
-  { name: 'Blog', url: `${SITE_URL}/blog/` },
-  { name: title, url: canonical },
+  { name: 'Blog', url: '/blog/' },
+  { name: title, url: Astro.url.pathname },
 ];
 
 const publishedDate = new Date(publishedAt).toLocaleDateString('en-US', {
@@ -52,7 +52,7 @@ const updatedDate = updatedAt
         <li aria-hidden="true">/</li>
         <li><a href="/blog/" class="hover:text-[var(--color-foreground)] transition-colors">Blog</a></li>
         <li aria-hidden="true">/</li>
-        <li class="text-[var(--color-foreground)] truncate max-w-[60%]" aria-current="page">{title}</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">Post Details</li>
       </ol>
     </nav>
 
@@ -75,6 +75,8 @@ const updatedDate = updatedAt
     <div class="article-body">
       <slot />
     </div>
+
+    <AdSlot slot="blog-article-bottom" />
 
     <footer class="mt-12 pt-8 border-t border-[var(--color-border)]">
       <p class="text-sm text-[var(--color-muted)] mb-4">

@@ -1,13 +1,27 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { SITE_URL, CONTACT_EMAIL } from '../config';
 
 const title = "Contact | WordForge";
 const description = "Contact the WordForge team. Send feedback, report bugs, or suggest features.";
+
+const breadcrumbs = [
+  { name: "Contact", url: "/contact/" }
+];
 ---
 
-<Layout title={title} description={description} canonical={`${SITE_URL}/contact/`} noindex>
+<Layout title={title} description={description} canonical={`${SITE_URL}/contact/`} breadcrumbs={breadcrumbs} noindex>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <!-- Breadcrumb HTML navigation -->
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">Contact</li>
+      </ol>
+    </nav>
+
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">Contact</h1>
 
     <div class="prose prose-sm max-w-none text-[var(--color-muted)] space-y-4">
@@ -21,10 +35,12 @@ const description = "Contact the WordForge team. Send feedback, report bugs, or 
       </p>
 
       <h2 class="text-lg font-semibold text-[var(--color-foreground)] mt-6">Before You Contact</h2>
-      <ul class="list-disc pl-5 space-y-1">
+      <ul class="list-disc pl-5 space-y-1 bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-200/50 dark:border-slate-800/50">
         <li>Found a missing word? Our dictionary is based on public domain word lists. Some proper nouns and very recent words may not be included.</li>
         <li>Is the solver not working? Try refreshing the page or clearing your browser cache.</li>
       </ul>
+
+      <AdSlot slot="contact-page" />
     </div>
   </div>
 </Layout>

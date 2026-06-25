@@ -1,15 +1,28 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Solver from '../components/Solver.tsx';
+import AdSlot from '../components/AdSlot.astro';
 import { SITE_URL } from '../config';
 
 const title = "Word Descrambler — Descramble Letters Into Words";
 const description = "The fastest word descrambler online. Descramble letters to find valid words for Scrabble, Wordscapes, and more. Highly optimized with zero ads.";
 const canonical = `${SITE_URL}/word-descrambler/`;
+
+const breadcrumbs = [
+  { name: "Word Descrambler", url: "/word-descrambler/" }
+];
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
+<Layout title={title} description={description} canonical={canonical} breadcrumbs={breadcrumbs}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <!-- Breadcrumbs -->
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">Word Descrambler</li>
+      </ol>
+    </nav>
     
     {/* Hero Section */}
     <div class="text-center mb-12 sm:mb-16">
@@ -24,6 +37,7 @@ const canonical = `${SITE_URL}/word-descrambler/`;
     {/* Solver Island */}
     <section aria-label="Word descrambler tool" class="mb-16">
       <Solver client:only="preact" />
+      <AdSlot slot="word-descrambler-below-solver" />
     </section>
 
     {/* What is a Word Descrambler? */}

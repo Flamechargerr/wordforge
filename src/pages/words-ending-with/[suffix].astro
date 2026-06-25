@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import AdSlot from '../../components/AdSlot.astro';
 import { createClientDictionary } from '../../lib/dictionary-client';
 import { getWordsEndingWith } from '../../lib/solver';
 
@@ -31,9 +32,13 @@ const sortedLengths = Array.from(wordsByLength.keys()).sort((a, b) => a - b);
 const title = `Words Ending in ${upper} | Scrabble Dictionary | WordForge`;
 const description = `Complete list of words ending in ${upper}. ${words.length} valid Scrabble and Words With Friends words. Find high-scoring game words.`;
 const canonical = `${SITE_URL}/words-ending-with/${lower}/`;
+
+const breadcrumbs = [
+  { name: `Words Ending With -${upper}`, url: `/words-ending-with/${lower}/` }
+];
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} breadcrumbs={breadcrumbs}>
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
     <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
       <ol class="flex items-center gap-2">
@@ -85,6 +90,8 @@ const canonical = `${SITE_URL}/words-ending-with/${lower}/`;
         );
       })}
     </div>
+
+    <AdSlot slot="words-ending-with-above-list" />
 
     <!-- Words by Length -->
     <div class="space-y-6">

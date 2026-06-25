@@ -313,7 +313,7 @@ export default function Solver({ initialLetters = '', mode = 'unscramble' }: Sol
           value={input}
           onInput={(e) => handleInput((e.target as HTMLInputElement).value)}
           placeholder={!dictionary ? "Loading dictionary database..." : mode === 'anagram' ? "Enter anagram letters (e.g., listen)..." : "Enter scrambled letters (use ?, * or space for blank)..."}
-          class="w-full pl-13 pr-32 py-4 text-base sm:text-lg bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl text-[var(--color-foreground)] placeholder:text-[var(--color-muted)] transition-all shadow-sm focus:outline-none"
+          class="w-full pl-12 pr-32 py-4 text-base sm:text-lg bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl text-[var(--color-foreground)] placeholder:text-[var(--color-muted)] transition-all shadow-sm focus:outline-none"
           maxLength={15}
           disabled={!dictionary}
           autocomplete="off"
@@ -328,7 +328,7 @@ export default function Solver({ initialLetters = '', mode = 'unscramble' }: Sol
         {/* Input indicators */}
         <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
           {(!dictionary || isLoading) && (
-            <div class="w-5 h-5 border-2 border-slate-200 dark:border-slate-850/50 border-t-blue-600 rounded-full animate-spin" title={!dictionary ? "Loading dictionary database..." : "Searching..."} />
+            <div class="w-5 h-5 border-2 border-slate-200 dark:border-slate-800/50 border-t-blue-600 rounded-full animate-spin" title={!dictionary ? "Loading dictionary database..." : "Searching..."} />
           )}
           <button
             onClick={() => setShowOptions(!showOptions)}
@@ -673,7 +673,7 @@ export default function Solver({ initialLetters = '', mode = 'unscramble' }: Sol
             </div>
 
             {/* Actions Footer */}
-            <div class="border-t border-slate-100 dark:border-slate-850/50 pt-4 mt-4 flex flex-col gap-2">
+            <div class="border-t border-slate-100 dark:border-slate-800/50 pt-4 mt-4 flex flex-col gap-2">
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(inspectingWord);

@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Solver from '../components/Solver.tsx';
+import AdSlot from '../components/AdSlot.astro';
 
 const title = "Word Unscrambler & Word Finder | Unscramble Words | WordForge";
 const description = "Free word unscrambler and Scrabble word finder. Enter scrambled letters and instantly solve all valid words for Scrabble, Words With Friends, and Wordle. Zero ads, instant results.";
@@ -38,6 +39,7 @@ const description = "Free word unscrambler and Scrabble word finder. Enter scram
           <span>Instant Response</span>
         </span>
       </div>
+      <AdSlot slot="homepage-below-solver" />
     </section>
 
     {/* Features */}
@@ -191,6 +193,8 @@ const description = "Free word unscrambler and Scrabble word finder. Enter scram
         ))}
       </div>
     </section>
+
+    <AdSlot slot="homepage-above-faq" />
 
     {/* FAQ Section */}
     <section class="mt-16 sm:mt-20" aria-label="Frequently asked questions">

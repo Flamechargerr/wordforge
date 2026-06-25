@@ -1,13 +1,27 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { SITE_URL } from '../config';
 
 const title = "Terms of Service | WordForge";
 const description = "WordForge's terms of service. Use the tool at your own risk for personal, non-commercial purposes.";
+
+const breadcrumbs = [
+  { name: "Terms of Service", url: "/terms/" }
+];
 ---
 
-<Layout title={title} description={description} canonical={`${SITE_URL}/terms/`} noindex>
+<Layout title={title} description={description} canonical={`${SITE_URL}/terms/`} breadcrumbs={breadcrumbs} noindex>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <!-- Breadcrumb HTML navigation -->
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">Terms of Service</li>
+      </ol>
+    </nav>
+
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">Terms of Service</h1>
     <p class="text-sm text-[var(--color-muted)] mb-8">Last updated: June 2025</p>
 
@@ -35,6 +49,8 @@ const description = "WordForge's terms of service. Use the tool at your own risk
       <p>
         We may update these terms at any time. Continued use of the service after changes constitutes acceptance of the new terms.
       </p>
+
+      <AdSlot slot="terms-page" />
     </div>
   </div>
 </Layout>

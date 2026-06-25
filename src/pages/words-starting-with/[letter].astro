@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import AdSlot from '../../components/AdSlot.astro';
 import { createClientDictionary } from '../../lib/dictionary-client';
 import { getWordsStartingWith } from '../../lib/solver';
 
@@ -21,9 +22,13 @@ const words = getWordsStartingWith(dictionary, lower);
 const title = `Words Starting With ${upper} | Scrabble & WWF Dictionary | WordForge`;
 const description = `Complete list of words starting with ${upper}. ${words.length} valid Scrabble and Words With Friends words beginning with ${upper}. Sort by length and score.`;
 const canonical = `${SITE_URL}/words-starting-with/${lower}/`;
+
+const breadcrumbs = [
+  { name: `Words Starting With ${upper}`, url: `/words-starting-with/${lower}/` }
+];
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} breadcrumbs={breadcrumbs}>
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
     <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
       <ol class="flex items-center gap-2">
@@ -74,6 +79,8 @@ const canonical = `${SITE_URL}/words-starting-with/${lower}/`;
         );
       })}
     </div>
+
+    <AdSlot slot="words-starting-with-above-list" />
 
     <!-- Words by Length -->
     <div class="space-y-6">

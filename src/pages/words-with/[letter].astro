@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import AdSlot from '../../components/AdSlot.astro';
 import { createClientDictionary } from '../../lib/dictionary-client';
 import { getWordsContaining } from '../../lib/solver';
 
@@ -29,9 +30,13 @@ const sortedLengths = Array.from(wordsByLength.keys()).sort((a, b) => a - b);
 const title = `Words With ${upper} | Scrabble & Word Game Dictionary | WordForge`;
 const description = `Find all words containing the letter ${upper}. ${words.length} valid Scrabble and Words With Friends words with ${upper}. Perfect for word games.`;
 const canonical = `${SITE_URL}/words-with/${lower}/`;
+
+const breadcrumbs = [
+  { name: `Words Containing ${upper}`, url: `/words-with/${lower}/` }
+];
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} breadcrumbs={breadcrumbs}>
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
     <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
       <ol class="flex items-center gap-2">
@@ -83,6 +88,8 @@ const canonical = `${SITE_URL}/words-with/${lower}/`;
         );
       })}
     </div>
+
+    <AdSlot slot="words-with-above-list" />
 
     <!-- Words by Length -->
     <div class="space-y-6">

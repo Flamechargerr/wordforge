@@ -1,0 +1,58 @@
+---
+/**
+ * Reusable Google AdSense Ad Slot component.
+ * Displays a clean, modern placeholder during local development / when ads are disabled,
+ * and outputs the standard AdSense ins and push script tags when ads are enabled.
+ */
+
+import { ENABLE_ADS, ADSENSE_CLIENT } from '../config';
+
+interface Props {
+  slot: string; // AdSense ad slot ID
+  format?: 'auto' | 'fluid' | 'rectangle' | 'horizontal' | 'vertical';
+  responsive?: 'true' | 'false';
+  className?: string;
+  style?: string;
+}
+
+const {
+  slot,
+  format = 'auto',
+  responsive = 'true',
+  className = '',
+  style = 'display:block;',
+} = Astro.props;
+---
+
+{
+  ENABLE_ADS ? (
+    <div class={`ad-container my-6 mx-auto w-full text-center overflow-hidden ${className}`}>
+      <ins
+        class="adsbygoogle"
+        style={style}
+        data-ad-client={ADSENSE_CLIENT}
+        data-ad-slot={slot}
+        data-ad-format={format}
+        data-full-width-responsive={responsive}
+      />
+      <script is:inline>
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  ) : (
+    <div 
+      class={`ad-placeholder my-6 mx-auto p-4 w-full rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/20 text-center flex flex-col items-center justify-center min-h-[90px] select-none transition-colors ${className}`}
+      aria-hidden="true"
+    >
+      <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1">
+        Sponsored Advertisement
+      </span>
+      <span class="text-xs font-bold text-[var(--color-muted)]">
+        Ad Slot ID: <code class="font-mono text-[var(--color-accent)]">{slot}</code>
+      </span>
+      <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 font-semibold">
+        Set <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-[var(--color-accent)]">ENABLE_ADS = true</code> in <span class="font-semibold text-slate-500">config.ts</span> to go live.
+      </p>
+    </div>
+  )
+}

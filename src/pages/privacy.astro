@@ -1,13 +1,27 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { SITE_URL } from '../config';
 
 const title = "Privacy Policy | WordForge";
 const description = "WordForge's privacy policy. We do not collect personal data, use cookies, or track you across the web.";
+
+const breadcrumbs = [
+  { name: "Privacy Policy", url: "/privacy/" }
+];
 ---
 
-<Layout title={title} description={description} canonical={`${SITE_URL}/privacy/`} noindex>
+<Layout title={title} description={description} canonical={`${SITE_URL}/privacy/`} breadcrumbs={breadcrumbs} noindex>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <!-- Breadcrumb HTML navigation -->
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">Privacy Policy</li>
+      </ol>
+    </nav>
+
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">Privacy Policy</h1>
     <p class="text-sm text-[var(--color-muted)] mb-8">Last updated: June 2025</p>
 
@@ -38,6 +52,8 @@ const description = "WordForge's privacy policy. We do not collect personal data
       <p>
         If we make material changes to this policy, we will update the date at the top of this page.
       </p>
+
+      <AdSlot slot="privacy-page" />
     </div>
   </div>
 </Layout>
