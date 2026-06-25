@@ -195,4 +195,209 @@ h1, h2, h3, h4, h5, h6 {
   border-width: 0;
 }
 
+/* Tactile 3D Wooden Tile Rack */
+.tile-rack {
+  position: relative;
+  background: linear-gradient(180deg, #6c4623 0%, #442a13 40%, #2f1d0d 100%);
+  border-radius: 14px;
+  padding: 18px 20px 24px 20px;
+  box-shadow: 
+    inset 0 2px 4px rgba(255, 255, 255, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    0 8px 24px -6px rgba(0, 0, 0, 0.2);
+  border: 1px solid #201309;
+  min-height: 84px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Ledge for 3D Rack */
+.tile-rack::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 14px;
+  background: linear-gradient(180deg, #2d1c0c 0%, #170e06 100%);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.6);
+  border-top: 1px solid #1a1007;
+}
+
+/* Tactile Game Letter Tile */
+.game-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #fffef9 0%, #f7f3e6 100%);
+  border: 1.5px solid #dfd8c4;
+  border-bottom-width: 3.5px;
+  border-bottom-color: #beb59e;
+  border-radius: 7px;
+  font-weight: 800;
+  color: #1e293b;
+  font-size: 15px;
+  position: relative;
+  user-select: none;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 #ffffff;
+  transition: all 0.2s ease;
+}
+
+/* Smaller size for dense grids */
+.game-tile-sm {
+  width: 24px;
+  height: 24px;
+  font-size: 11px;
+  border-width: 1px;
+  border-bottom-width: 2.5px;
+  border-radius: 5px;
+}
+
+.game-tile-lg {
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  border-width: 2px;
+  border-bottom-width: 5px;
+  border-radius: 9px;
+}
+
+.game-tile-points {
+  position: absolute;
+  bottom: 1.5px;
+  right: 2px;
+  font-size: 7px;
+  font-weight: 800;
+  color: #78716c;
+  line-height: 1;
+}
+
+.game-tile-sm .game-tile-points {
+  font-size: 5px;
+  bottom: 0.5px;
+  right: 1px;
+}
+
+.game-tile-lg .game-tile-points {
+  font-size: 10px;
+  bottom: 3px;
+  right: 3px;
+}
+
+/* Blank / Wildcard substitute Tile */
+.game-tile-blank {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #bbf7d0;
+  border-bottom-color: #86efac;
+  color: #166534;
+}
+
+.game-tile-blank .game-tile-points {
+  color: #15803d;
+}
+
+/* Dark mode overrides for tiles */
+@media (prefers-color-scheme: dark) {
+  .game-tile {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-color: #334155;
+    border-bottom-color: #020617;
+    color: #f8fafc;
+    box-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  
+  .game-tile-points {
+    color: #94a3b8;
+  }
+  
+  .game-tile-blank {
+    background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+    border-color: #065f46;
+    border-bottom-color: #042f2e;
+    color: #34d399;
+  }
+  
+  .game-tile-blank .game-tile-points {
+    color: #059669;
+  }
+}
+
+/* Interactive Modal / Inspector Drawer */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modal-container {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  max-height: 90vh;
+  display: flex;
+  flex-col: col;
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(24px) scale(0.97); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Trust Pill Banner */
+.trust-badge-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+
 

@@ -36,6 +36,11 @@ export function getStaticPaths() {
 const { word } = Astro.params;
 const cleanWord = (word ?? '').toLowerCase().replace(/[^a-z]/g, '');
 
+const LETTER_SCORES: Record<string, number> = {
+  a: 1, b: 3, c: 3, d: 2, e: 1, f: 4, g: 2, h: 4, i: 1, j: 8, k: 5, l: 1, m: 3,
+  n: 1, o: 1, p: 3, q: 10, r: 1, s: 1, t: 1, u: 1, v: 4, w: 4, x: 8, y: 4, z: 10
+};
+
 const dictionary = createServerDictionary();
 const results = solve(dictionary, cleanWord);
 const anagrams = getAnagrams(dictionary, cleanWord);
@@ -223,10 +228,17 @@ const faqSchema = {
                   {group.map(word => (
                     <a
                       href={`/unscramble/${word.word}/`}
-                      class="word-tile px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wide text-[var(--color-foreground)] flex items-center gap-2 cursor-pointer"
+                      class="word-tile pl-3 pr-10 py-2 rounded-xl flex items-center gap-2 cursor-pointer transition-all"
                       title={`Details for ${word.word.toUpperCase()}`}
                     >
-                      {word.word}
+                      <div class="flex gap-0.5" aria-label={word.word.toUpperCase()}>
+                        {word.word.split('').map((char) => (
+                          <span class="game-tile game-tile-sm font-bold">
+                            {char.toUpperCase()}
+                            <span class="game-tile-points">{LETTER_SCORES[char.toLowerCase()] ?? 0}</span>
+                          </span>
+                        ))}
+                      </div>
                       <span class="score-badge">
                         {word.score}
                       </span>
