@@ -13,7 +13,7 @@ const { letter } = Astro.params;
 const lower = (letter ?? 'a').toLowerCase();
 const upper = lower.toUpperCase();
 
-const dictionary = createClientDictionary();
+const dictionary = await createClientDictionary();
 const words = getWordsStartingWith(dictionary, lower);
 
 const title = `Words Starting With ${upper} | Scrabble & WWF Dictionary | WordForge`;

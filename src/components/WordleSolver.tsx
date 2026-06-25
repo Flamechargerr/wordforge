@@ -1,18 +1,24 @@
 import { useState, useEffect } from 'preact/hooks';
+import type { Dictionary } from '../types';
 import { createClientDictionary } from '../lib/dictionary-client';
 import { track } from '../services/analytics';
 
-const dictionary = createClientDictionary();
-
 export default function WordleSolver() {
+  const [dictionary, setDictionary] = useState<Dictionary | null>(null);
   const [green, setGreen] = useState<string[]>(['', '', '', '', '']);
   const [yellow, setYellow] = useState('');
   const [gray, setGray] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [copiedWord, setCopiedWord] = useState<string | null>(null);
 
+  // Load client dictionary on mount
+  useEffect(() => {
+    createClientDictionary().then(setDictionary);
+  }, []);
+
   // Extract all 5-letter words from dictionary
   const getFiveLetterWords = () => {
+    if (!dictionary) return [];
     const list: string[] = [];
     for (const words of dictionary.index.values()) {
       for (const entry of words) {
@@ -25,6 +31,8 @@ export default function WordleSolver() {
   };
 
   useEffect(() => {
+    if (!dictionary) return;
+
     const allWords = getFiveLetterWords();
     const cleanYellow = yellow.toLowerCase().replace(/[^a-z]/g, '').split('');
     const cleanGray = gray.toLowerCase().replace(/[^a-z]/g, '').split('');
@@ -63,7 +71,7 @@ export default function WordleSolver() {
     // Sort matches alphabetically
     matches.sort();
     setSuggestions(matches);
-  }, [green, yellow, gray]);
+  }, [green, yellow, gray, dictionary]);
 
   const handleGreenChange = (index: number, val: string) => {
     const letter = val.replace(/[^a-zA-Z]/g, '').slice(-1).toUpperCase();

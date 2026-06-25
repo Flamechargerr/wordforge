@@ -13,8 +13,7 @@ import {
   groupResultsByLength,
 } from '../src/lib/solver';
 import { createClientDictionary } from '../src/lib/dictionary-client';
-
-const dictionary = createClientDictionary();
+const dictionary = await createClientDictionary();
 
 describe('solve', () => {
   it('finds anagrams of "listen"', () => {

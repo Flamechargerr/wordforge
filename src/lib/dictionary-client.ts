@@ -5,7 +5,6 @@
  */
 
 import type { Dictionary, WordEntry } from '../types/index.ts';
-import clientData from './dictionary-client.json';
 import { calculateScrabbleScore } from './scrabble.ts';
 
 interface ClientDictionaryData {
@@ -13,7 +12,7 @@ interface ClientDictionaryData {
   totalWords: number;
 }
 
-const data = clientData as unknown as ClientDictionaryData;
+let cachedDict: Dictionary | null = null;
 
 function createWordEntry(word: string): WordEntry {
   return {
@@ -24,9 +23,14 @@ function createWordEntry(word: string): WordEntry {
 }
 
 /**
- * Create a Dictionary instance from the client JSON data.
+ * Create a Dictionary instance from the client JSON data asynchronously.
  */
-export function createClientDictionary(): Dictionary {
+export async function createClientDictionary(): Promise<Dictionary> {
+  if (cachedDict) return cachedDict;
+
+  const clientData = await import('./dictionary-client.json');
+  const data = clientData.default as unknown as ClientDictionaryData;
+
   const index = new Map<string, readonly WordEntry[]>();
   let maxLen = 0;
 
@@ -38,12 +42,11 @@ export function createClientDictionary(): Dictionary {
     }
   }
 
-  return Object.freeze({
+  cachedDict = Object.freeze({
     index: Object.freeze(index),
     totalWords: data.totalWords,
     maxWordLength: maxLen,
   });
-}
 
-/** Singleton client dictionary instance */
-export const clientDictionary = createClientDictionary();
+  return cachedDict;
+}

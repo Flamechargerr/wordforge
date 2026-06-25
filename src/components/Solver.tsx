@@ -1,10 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'preact/hooks';
-import type { WordEntry, SolverResult } from '../types';
+import type { WordEntry, SolverResult, Dictionary } from '../types';
 import { solve, groupResultsByLength } from '../lib/solver';
 import { createClientDictionary } from '../lib/dictionary-client';
 import { track } from '../services/analytics';
-
-const dictionary = createClientDictionary();
 
 interface SolverProps {
   initialLetters?: string;
@@ -12,6 +10,7 @@ interface SolverProps {
 }
 
 export default function Solver({ initialLetters = '', mode = 'unscramble' }: SolverProps) {
+  const [dictionary, setDictionary] = useState<Dictionary | null>(null);
   const [input, setInput] = useState(initialLetters);
   const [result, setResult] = useState<SolverResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,10 +27,17 @@ export default function Solver({ initialLetters = '', mode = 'unscramble' }: Sol
   const [contains, setContains] = useState('');
   const [gameMode, setGameMode] = useState<'scrabble' | 'wwf'>('scrabble');
 
+  // Load client dictionary on mount
+  useEffect(() => {
+    createClientDictionary().then(setDictionary);
+  }, []);
+
   const performSearch = useCallback((
     value: string,
     opts: { pref?: string; suff?: string; cont?: string; game?: 'scrabble' | 'wwf' } = {}
   ) => {
+    if (!dictionary) return;
+
     // Keep wildcards (?, *, space)
     const normalized = value.toLowerCase().replace(/[^a-z?* ]/g, '');
     const letterOnlyLength = normalized.replace(/[?* ]/g, '').length;
@@ -83,7 +89,14 @@ export default function Solver({ initialLetters = '', mode = 'unscramble' }: Sol
         inputLength: normalized.length,
       });
     }
-  }, [prefix, suffix, contains, gameMode, mode]);
+  }, [prefix, suffix, contains, gameMode, mode, dictionary]);
+
+  // Run initial search once dictionary is loaded
+  useEffect(() => {
+    if (dictionary && initialLetters) {
+      performSearch(initialLetters);
+    }
+  }, [dictionary, initialLetters, performSearch]);
 
   const handleInput = useCallback((value: string) => {
     // Keep a-z and wildcards

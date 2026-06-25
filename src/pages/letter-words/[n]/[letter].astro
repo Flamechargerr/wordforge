@@ -18,7 +18,7 @@ const numN = Number(n);
 const lower = (letter ?? 'a').toLowerCase();
 const upper = lower.toUpperCase();
 
-const dictionary = createClientDictionary();
+const dictionary = await createClientDictionary();
 const words = getWordsByLengthAndStartingLetter(dictionary, numN, lower);
 
 const title = `${n}-Letter Words Starting With ${upper} | Scrabble Dictionary | WordForge`;
