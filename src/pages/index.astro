@@ -2,8 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Solver from '../components/Solver.tsx';
 
-const title = "WordForge — Unscramble Any Letters Into Valid Words";
-const description = "The fastest word unscrambler on the internet. Enter scrambled letters and instantly discover every valid Scrabble and Words With Friends word. 370,000+ word dictionary, zero ads, instant results.";
+const title = "Word Unscrambler & Word Finder | Unscramble Words | WordForge";
+const description = "Free word unscrambler and Scrabble word finder. Enter scrambled letters and instantly solve all valid words for Scrabble, Words With Friends, and Wordle. Zero ads, instant results.";
 ---
 
 <Layout title={title} description={description}>
@@ -12,7 +12,7 @@ const description = "The fastest word unscrambler on the internet. Enter scrambl
     {/* Hero Section */}
     <div class="text-center mb-12 sm:mb-16">
       <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6">
-        WordForge Unscrambler
+        Word Unscrambler & Word Finder
       </h1>
       <p class="text-lg sm:text-xl text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed">
         Enter up to 12 scrambled letters to instantly find all valid Scrabble and Words With Friends words.
@@ -86,6 +86,79 @@ const description = "The fastest word unscrambler on the internet. Enter scrambl
           </div>
         </li>
       </ol>
+    </section>
+
+    {/* Browse by Length */}
+    <section class="mt-16 sm:mt-20" aria-label="Browse words by length">
+      <h2 class="text-2xl font-bold mb-6 text-[var(--color-foreground)]">Browse Words by Length</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {[2, 3, 4, 5, 6, 7, 8].map((len) => (
+          <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-4 shadow-sm hover:border-[var(--color-accent)] transition-all duration-150">
+            <h3 class="font-bold text-[var(--color-foreground)] text-sm sm:text-base mb-2">{len}-Letter Words</h3>
+            <div class="flex flex-wrap gap-1">
+              {['a', 'b', 'c', 'd', 'e', 'f', 's', 't'].map((l) => (
+                <a
+                  href={`/letter-words/${len}/${l}/`}
+                  class="w-6 h-6 flex items-center justify-center bg-[var(--color-background)] hover:bg-[var(--color-accent-subtle)] border border-[var(--color-border)] hover:border-[var(--color-accent)] rounded-md text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors"
+                >
+                  {l.toUpperCase()}
+                </a>
+              ))}
+              <a
+                href={`/letter-words/${len}/a/`}
+                class="px-1.5 h-6 flex items-center justify-center bg-[var(--color-background)] hover:bg-[var(--color-accent-subtle)] border border-[var(--color-border)] hover:border-[var(--color-accent)] rounded-md text-xs font-semibold text-[var(--color-accent)] transition-colors"
+              >
+                All &rarr;
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Browse Words by Starting Letter */}
+    <section class="mt-16 sm:mt-20" aria-label="Browse words by starting letter">
+      <h2 class="text-2xl font-bold mb-6 text-[var(--color-foreground)]">Words Starting With</h2>
+      <div class="flex flex-wrap gap-1.5">
+        {'abcdefghijklmnopqrstuvwxyz'.split('').map((l) => (
+          <a
+            href={`/words-starting-with/${l}/`}
+            class="w-9 h-9 flex items-center justify-center bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl font-bold text-sm text-[var(--color-muted)] transition-all duration-150 shadow-sm"
+          >
+            {l.toUpperCase()}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {/* Browse Words Containing Letter */}
+    <section class="mt-16 sm:mt-20" aria-label="Browse words containing specific letters">
+      <h2 class="text-2xl font-bold mb-6 text-[var(--color-foreground)]">Words Containing Letter</h2>
+      <div class="flex flex-wrap gap-1.5">
+        {'abcdefghijklmnopqrstuvwxyz'.split('').map((l) => (
+          <a
+            href={`/words-with/${l}/`}
+            class="w-9 h-9 flex items-center justify-center bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl font-bold text-sm text-[var(--color-muted)] transition-all duration-150 shadow-sm"
+          >
+            {l.toUpperCase()}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {/* Browse Words Ending With Suffix */}
+    <section class="mt-16 sm:mt-20" aria-label="Browse words ending with common suffixes">
+      <h2 class="text-2xl font-bold mb-6 text-[var(--color-foreground)]">Words Ending With</h2>
+      <div class="flex flex-wrap gap-2">
+        {['ing', 'tion', 'ed', 'er', 'ly', 'ness', 'ment', 'able', 'ous', 'ive', 'al', 'ful', 'less', 'ist', 'ize', 'ise', 'ish', 'ism', 'ity', 'ant', 'ent', 'ate', 'ure', 'age', 'ary', 'ory'].map((suffix) => (
+          <a
+            href={`/words-ending-with/${suffix}/`}
+            class="px-4 py-2 bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl text-sm font-semibold text-[var(--color-muted)] transition-all duration-150 shadow-sm"
+          >
+            -{suffix}
+          </a>
+        ))}
+      </div>
     </section>
 
     {/* Popular Searches */}

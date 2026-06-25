@@ -1,0 +1,151 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { createClientDictionary } from '../../lib/dictionary-client';
+import { getWordsEndingWith } from '../../lib/solver';
+
+import { SITE_URL } from '../../config';
+
+const SUFFIXES = ['ing', 'tion', 'ed', 'er', 'ly', 'ness', 'ment', 'able', 'ous', 'ive', 'al', 'ful', 'less', 'ist', 'ize', 'ise', 'ish', 'ism', 'ity', 'ant', 'ent', 'ate', 'ure', 'age', 'ary', 'ory'];
+
+export function getStaticPaths() {
+  return ['ing', 'tion', 'ed', 'er', 'ly', 'ness', 'ment', 'able', 'ous', 'ive', 'al', 'ful', 'less', 'ist', 'ize', 'ise', 'ish', 'ism', 'ity', 'ant', 'ent', 'ate', 'ure', 'age', 'ary', 'ory'].map(suffix => ({
+    params: { suffix },
+  }));
+}
+
+const { suffix } = Astro.params;
+const lower = (suffix ?? 'ing').toLowerCase();
+const upper = lower.toUpperCase();
+
+const dictionary = await createClientDictionary();
+const words = getWordsEndingWith(dictionary, lower);
+
+const wordsByLength = new Map<number, string[]>();
+for (const word of words) {
+  const len = word.length;
+  if (!wordsByLength.has(len)) wordsByLength.set(len, []);
+  wordsByLength.get(len)!.push(word);
+}
+const sortedLengths = Array.from(wordsByLength.keys()).sort((a, b) => a - b);
+
+const title = `Words Ending in ${upper} | Scrabble Dictionary | WordForge`;
+const description = `Complete list of words ending in ${upper}. ${words.length} valid Scrabble and Words With Friends words. Find high-scoring game words.`;
+const canonical = `${SITE_URL}/words-ending-with/${lower}/`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><span class="hover:text-[var(--color-foreground)] transition-colors">Words Ending With</span></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">{upper}</li>
+      </ol>
+    </nav>
+
+    <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-2">
+      Words Ending in <span class="text-[var(--color-accent)]">{upper}</span>
+    </h1>
+    <p class="text-[var(--color-muted)] mb-4">
+      {words.length} valid Scrabble and Words With Friends words ending in {upper}
+    </p>
+    <p class="text-sm text-[var(--color-muted)] leading-relaxed mb-8 max-w-2xl">
+      Searching for words that end with <strong>-{upper}</strong>? Words ending in {upper} are incredibly useful in Scrabble, Words With Friends, and other word games because common suffixes like -{upper} appear on many high-scoring words. Knowing these words lets you extend existing board words by adding the suffix, earning bonus points for longer plays. Browse the full list below, grouped by word length, to find the perfect move for your next turn.
+    </p>
+
+    <!-- Suffix Navigation -->
+    <div class="flex flex-wrap justify-center gap-1.5 mb-8">
+      {SUFFIXES.map(s => (
+        <a
+          href={`/words-ending-with/${s}/`}
+          class={`px-2.5 py-1.5 rounded-lg font-semibold text-xs transition-colors ${
+            s === lower
+              ? 'bg-[var(--color-accent)] text-white'
+              : 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:border-[var(--color-accent)]'
+          }`}
+        >
+          -{s.toUpperCase()}
+        </a>
+      ))}
+    </div>
+
+    <!-- Word Counts by Length -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+      {sortedLengths.map(len => {
+        const count = wordsByLength.get(len)!.length;
+        return (
+          <div
+            class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-3 text-center block transition-all shadow-sm"
+          >
+            <div class="text-xl font-bold text-[var(--color-accent)]">{count}</div>
+            <div class="text-xs text-[var(--color-muted)] font-semibold">{len}-Letter Words</div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Words by Length -->
+    <div class="space-y-6">
+      {sortedLengths.map(len => {
+        const group = wordsByLength.get(len)!;
+        return (
+          <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">
+              <h2 class="font-bold text-[var(--color-foreground)] text-sm sm:text-base">{len}-Letter Words Ending in {upper}</h2>
+              <span class="text-xs font-bold text-[var(--color-accent)]">
+                {group.length} words
+              </span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              {group.slice(0, 50).map(word => (
+                <a
+                  href={`/unscramble/${word}/`}
+                  class="px-2.5 py-1.5 bg-[var(--color-background)] hover:bg-[var(--color-accent-subtle)] border border-[var(--color-border)] hover:border-[var(--color-accent)] rounded-lg text-sm transition-colors uppercase tracking-wide text-[var(--color-foreground)]"
+                >
+                  {word}
+                </a>
+              ))}
+              {group.length > 50 && (
+                <span
+                  class="px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-750/30 text-[var(--color-accent)] rounded-lg text-sm font-bold"
+                >
+                  +{group.length - 50} more words
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Cross-Links -->
+    <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
+      <h3 class="text-sm font-bold text-[var(--color-foreground)] mb-4 text-center">Explore more word lists</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <a
+          href="/"
+          class="bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl p-4 text-center block transition-all shadow-sm"
+        >
+          <div class="text-sm font-bold text-[var(--color-foreground)]">Word Unscrambler</div>
+          <div class="text-xs text-[var(--color-muted)] mt-1">Unscramble any letters</div>
+        </a>
+        <a
+          href={`/words-starting-with/${lower.charAt(0)}/`}
+          class="bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl p-4 text-center block transition-all shadow-sm"
+        >
+          <div class="text-sm font-bold text-[var(--color-foreground)]">Words Starting With {lower.charAt(0).toUpperCase()}</div>
+          <div class="text-xs text-[var(--color-muted)] mt-1">Browse by first letter</div>
+        </a>
+        <a
+          href="/letter-words/5/a/"
+          class="bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl p-4 text-center block transition-all shadow-sm"
+        >
+          <div class="text-sm font-bold text-[var(--color-foreground)]">5-Letter Words</div>
+          <div class="text-xs text-[var(--color-muted)] mt-1">Perfect for Wordle</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

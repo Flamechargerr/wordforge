@@ -5,7 +5,7 @@ import preact from '@astrojs/preact';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://wordforge.app',
+  site: 'https://wordforge-xi.vercel.app',
   output: 'static',
   compressHTML: true,
   build: {

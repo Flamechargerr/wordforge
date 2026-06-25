@@ -282,6 +282,48 @@ export function getWordsByLengthAndStartingLetter(
 }
 
 /**
+ * Get words from the dictionary that end with a given suffix.
+ * @param dictionary - The dictionary
+ * @param suffix - Ending suffix (e.g., 'ing', 'tion', 'ed')
+ * @returns Array of words ending with the suffix
+ */
+export function getWordsEndingWith(dictionary: Dictionary, suffix: string): string[] {
+  const lower = suffix.toLowerCase();
+  if (!lower || !/^[a-z]+$/.test(lower)) return [];
+
+  const results: string[] = [];
+  for (const entries of dictionary.index.values()) {
+    for (const entry of entries) {
+      if (entry.word.endsWith(lower) && entry.word.length > lower.length) {
+        results.push(entry.word);
+      }
+    }
+  }
+  return [...new Set(results)].sort();
+}
+
+/**
+ * Get words from the dictionary that contain a given letter.
+ * @param dictionary - The dictionary
+ * @param letter - The letter to search for
+ * @returns Array of words containing the letter
+ */
+export function getWordsContaining(dictionary: Dictionary, letter: string): string[] {
+  const lower = letter.toLowerCase();
+  if (!/^[a-z]$/.test(lower)) return [];
+
+  const results: string[] = [];
+  for (const entries of dictionary.index.values()) {
+    for (const entry of entries) {
+      if (entry.word.includes(lower)) {
+        results.push(entry.word);
+      }
+    }
+  }
+  return [...new Set(results)].sort();
+}
+
+/**
  * Group solver results by word length.
  * @param words - Solver result words
  * @returns Grouped words, sorted by length descending

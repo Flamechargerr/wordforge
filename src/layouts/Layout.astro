@@ -8,12 +8,18 @@
 import { SITE_URL } from '../config';
 import '../styles/global.css';
 
+interface BreadcrumbItem {
+  name: string;
+  url?: string;
+}
+
 interface Props {
   title?: string;
   description?: string;
   canonical?: string;
   ogImage?: string;
   noindex?: boolean;
+  breadcrumbs?: BreadcrumbItem[];
 }
 
 const {
@@ -22,10 +28,41 @@ const {
   canonical = new URL(Astro.url.pathname, SITE_URL).href,
   ogImage = `${SITE_URL}/og-image.png`,
   noindex = false,
+  breadcrumbs = [],
 } = Astro.props;
 
 const siteName = "WordForge";
 const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+
+// Build BreadcrumbList schema (always includes Home)
+const breadcrumbSchema = breadcrumbs.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    ...breadcrumbs.map((crumb, i) => ({
+      "@type": "ListItem",
+      position: i + 2,
+      name: crumb.name,
+      ...(crumb.url ? { item: `${SITE_URL}${crumb.url}` } : {}),
+    })),
+  ],
+} : null;
+
+// SiteNavigationElement for nav links
+const navSchema = {
+  "@context": "https://schema.org",
+  "@type": "SiteNavigationElement",
+  name: ["Word Unscrambler", "Anagram Solver", "Wordle Helper", "Words Starting With", "Words Ending With", "Words With Letter"],
+  url: [
+    SITE_URL,
+    `${SITE_URL}/anagram-solver/`,
+    `${SITE_URL}/wordle-solver/`,
+    `${SITE_URL}/words-starting-with/a/`,
+    `${SITE_URL}/words-ending-with/ing/`,
+    `${SITE_URL}/words-with/a/`,
+  ],
+};
 ---
 
 <!doctype html>
@@ -89,6 +126,20 @@ const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
           name: siteName,
         },
       })}
+    />
+
+    <!-- JSON-LD: BreadcrumbList -->
+    {breadcrumbSchema && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(breadcrumbSchema)}
+      />
+    )}
+
+    <!-- JSON-LD: SiteNavigationElement -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(navSchema)}
     />
 
     <!-- JSON-LD: FAQPage (only on homepage) -->
@@ -196,16 +247,19 @@ const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
                </ul>
             </div>
             <div>
-              <h4 class="text-xs font-black uppercase tracking-wider text-[var(--color-foreground)] mb-3">Word Solvers</h4>
+              <h4 class="text-xs font-black uppercase tracking-wider text-[var(--color-foreground)] mb-3">Word Lists</h4>
                <ul class="space-y-2 text-xs font-semibold">
-                 <li><a href="/word-descrambler/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Word Descrambler</a></li>
-                 <li><a href="/word-scramble/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Scramble Solver</a></li>
+                 <li><a href="/words-starting-with/a/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Words Starting With</a></li>
+                 <li><a href="/words-ending-with/ing/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Words Ending With</a></li>
+                 <li><a href="/words-with/q/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Words Containing</a></li>
                  <li><a href="/blog/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Word Strategy Blog</a></li>
                </ul>
             </div>
             <div>
-              <h4 class="text-xs font-black uppercase tracking-wider text-[var(--color-foreground)] mb-3">Information</h4>
+              <h4 class="text-xs font-black uppercase tracking-wider text-[var(--color-foreground)] mb-3">More Tools</h4>
                <ul class="space-y-2 text-xs font-semibold">
+                 <li><a href="/word-descrambler/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Word Descrambler</a></li>
+                 <li><a href="/word-scramble/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Scramble Solver</a></li>
                  <li><a href="/privacy/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Privacy Policy</a></li>
                  <li><a href="/terms/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Terms of Service</a></li>
                  <li><a href="/contact/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Contact Support</a></li>

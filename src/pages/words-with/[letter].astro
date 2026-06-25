@@ -1,0 +1,149 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { createClientDictionary } from '../../lib/dictionary-client';
+import { getWordsContaining } from '../../lib/solver';
+
+import { SITE_URL } from '../../config';
+
+export function getStaticPaths() {
+  return 'abcdefghijklmnopqrstuvwxyz'.split('').map(letter => ({
+    params: { letter },
+  }));
+}
+
+const { letter } = Astro.params;
+const lower = (letter ?? 'a').toLowerCase();
+const upper = lower.toUpperCase();
+
+const dictionary = await createClientDictionary();
+const words = getWordsContaining(dictionary, lower);
+
+const wordsByLength = new Map<number, string[]>();
+for (const word of words) {
+  const len = word.length;
+  if (!wordsByLength.has(len)) wordsByLength.set(len, []);
+  wordsByLength.get(len)!.push(word);
+}
+const sortedLengths = Array.from(wordsByLength.keys()).sort((a, b) => a - b);
+
+const title = `Words With ${upper} | Scrabble & Word Game Dictionary | WordForge`;
+const description = `Find all words containing the letter ${upper}. ${words.length} valid Scrabble and Words With Friends words with ${upper}. Perfect for word games.`;
+const canonical = `${SITE_URL}/words-with/${lower}/`;
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><span class="hover:text-[var(--color-foreground)] transition-colors">Words With</span></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">{upper}</li>
+      </ol>
+    </nav>
+
+    <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-2">
+      Words With <span class="text-[var(--color-accent)]">{upper}</span>
+    </h1>
+    <p class="text-[var(--color-muted)] mb-4">
+      {words.length} valid Scrabble and Words With Friends words containing {upper}
+    </p>
+    <p class="text-sm text-[var(--color-muted)] leading-relaxed mb-8 max-w-2xl">
+      Looking for words that contain the letter <strong>{upper}</strong>? Whether you have a tricky tile rack in Scrabble, need to work around existing letters in Words With Friends, or just want to expand your vocabulary, this complete list of words with {upper} has you covered. Browse by word length below to quickly find the right word for your board. High-value letters like Q, X, and Z can be game-changers — make the most of them!
+    </p>
+
+    <!-- Letter Navigation -->
+    <div class="flex flex-wrap justify-center gap-1.5 mb-8">
+      {'abcdefghijklmnopqrstuvwxyz'.split('').map(l => (
+        <a
+          href={`/words-with/${l}/`}
+          class={`w-8 h-8 flex items-center justify-center rounded-lg font-semibold text-sm transition-colors ${
+            l === lower
+              ? 'bg-[var(--color-accent)] text-white'
+              : 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:border-[var(--color-accent)]'
+          }`}
+        >
+          {l.toUpperCase()}
+        </a>
+      ))}
+    </div>
+
+    <!-- Word Counts by Length -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+      {sortedLengths.map(len => {
+        const count = wordsByLength.get(len)!.length;
+        return (
+          <div
+            class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-3 text-center block transition-all shadow-sm"
+          >
+            <div class="text-xl font-bold text-[var(--color-accent)]">{count}</div>
+            <div class="text-xs text-[var(--color-muted)] font-semibold">{len}-Letter Words</div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Words by Length -->
+    <div class="space-y-6">
+      {sortedLengths.map(len => {
+        const group = wordsByLength.get(len)!;
+        return (
+          <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">
+              <h2 class="font-bold text-[var(--color-foreground)] text-sm sm:text-base">{len}-Letter Words With {upper}</h2>
+              <span class="text-xs font-bold text-[var(--color-accent)]">
+                {group.length} words
+              </span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              {group.slice(0, 50).map(word => (
+                <a
+                  href={`/unscramble/${word}/`}
+                  class="px-2.5 py-1.5 bg-[var(--color-background)] hover:bg-[var(--color-accent-subtle)] border border-[var(--color-border)] hover:border-[var(--color-accent)] rounded-lg text-sm transition-colors uppercase tracking-wide text-[var(--color-foreground)]"
+                >
+                  {word}
+                </a>
+              ))}
+              {group.length > 50 && (
+                <span
+                  class="px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-750/30 text-[var(--color-accent)] rounded-lg text-sm font-bold"
+                >
+                  +{group.length - 50} more words
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Cross-Links -->
+    <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
+      <h3 class="text-sm font-bold text-[var(--color-foreground)] mb-4 text-center">Explore more words with {upper}</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <a
+          href={`/words-starting-with/${lower}/`}
+          class="bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl p-4 text-center block transition-all shadow-sm"
+        >
+          <div class="text-sm font-bold text-[var(--color-foreground)]">Words Starting With {upper}</div>
+          <div class="text-xs text-[var(--color-muted)] mt-1">Words beginning with {upper}</div>
+        </a>
+        <a
+          href={`/letter-words/5/${lower}/`}
+          class="bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl p-4 text-center block transition-all shadow-sm"
+        >
+          <div class="text-sm font-bold text-[var(--color-foreground)]">5-Letter Words With {upper}</div>
+          <div class="text-xs text-[var(--color-muted)] mt-1">Great for Wordle</div>
+        </a>
+        <a
+          href="/"
+          class="bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl p-4 text-center block transition-all shadow-sm"
+        >
+          <div class="text-sm font-bold text-[var(--color-foreground)]">Word Unscrambler</div>
+          <div class="text-xs text-[var(--color-muted)] mt-1">Unscramble any letters</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>
