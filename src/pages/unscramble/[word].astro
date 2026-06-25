@@ -71,18 +71,18 @@ const canonical = `https://wordforge.app/unscramble/${cleanWord}/`;
     <!-- Stats -->
     {results.words.length > 0 && (
       <div class="grid grid-cols-3 gap-4 mb-8">
-        <div class="glass-panel rounded-2xl p-4 text-center">
+        <div class="panel p-4 text-center">
           <div class="text-3xl font-extrabold text-[var(--color-foreground)]">{results.words.length}</div>
-          <div class="text-xs text-[var(--color-muted)] font-medium uppercase tracking-widest mt-1">Total Words</div>
+          <div class="text-xs text-[var(--color-muted)] font-bold uppercase tracking-wider mt-1">Total Words</div>
         </div>
-        <div class="glass-panel rounded-2xl p-4 text-center">
-          <div class="text-3xl font-extrabold text-[var(--color-accent)]">{maxLength}</div>
-          <div class="text-xs text-[var(--color-muted)] font-medium uppercase tracking-widest mt-1">Longest</div>
+        <div class="panel p-4 text-center">
+          <div class="text-3xl font-extrabold text-blue-600 dark:text-blue-400">{maxLength}</div>
+          <div class="text-xs text-[var(--color-muted)] font-bold uppercase tracking-wider mt-1">Longest</div>
           <div class="text-xs text-[var(--color-muted)] mt-1 font-semibold uppercase tracking-wider">{longestWords.slice(0, 2).map(w => w.word).join(', ')}</div>
         </div>
-        <div class="glass-panel rounded-2xl p-4 text-center">
-          <div class="text-3xl font-extrabold text-[var(--color-success)]">{highestScore}</div>
-          <div class="text-xs text-[var(--color-muted)] font-medium uppercase tracking-widest mt-1">Best Score</div>
+        <div class="panel p-4 text-center">
+          <div class="text-3xl font-extrabold text-green-600 dark:text-green-400">{highestScore}</div>
+          <div class="text-xs text-[var(--color-muted)] font-bold uppercase tracking-wider mt-1">Best Score</div>
           <div class="text-xs text-[var(--color-muted)] mt-1 font-semibold uppercase tracking-wider">{bestWords.slice(0, 2).map(w => w.word).join(', ')}</div>
         </div>
       </div>
@@ -90,24 +90,28 @@ const canonical = `https://wordforge.app/unscramble/${cleanWord}/`;
 
     <!-- Results by Length -->
     {results.words.length > 0 ? (
-      <div class="space-y-6">
+      <div class="space-y-4">
         {Array.from(new Set(results.words.map(w => w.length))).sort((a, b) => b - a).map(length => {
           const group = results.words.filter(w => w.length === length);
           return (
-            <div class="glass-panel rounded-2xl overflow-hidden shadow-sm">
-              <div class="px-5 py-4 bg-gradient-to-r from-[var(--color-accent-subtle)] to-transparent border-b border-[var(--color-border)] flex items-center justify-between">
-                <h2 class="font-bold text-base text-[var(--color-foreground)]">{length} Letter{length !== 1 ? 's' : ''}</h2>
-                <span class="px-2.5 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-xs font-bold text-[var(--color-muted)]">{group.length} word{group.length !== 1 ? 's' : ''}</span>
+            <div class="panel rounded-xl overflow-hidden shadow-sm">
+              <div class="px-5 py-3.5 bg-slate-50 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <h2 class="font-extrabold text-base text-[var(--color-foreground)]">{length} Letter{length !== 1 ? 's' : ''}</h2>
+                <span class="px-2.5 py-1 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-[var(--color-muted)]">{group.length} word{group.length !== 1 ? 's' : ''}</span>
               </div>
               <div class="p-5">
                 <div class="flex flex-wrap gap-2.5">
                   {group.map(word => (
-                    <span class="word-tile px-4 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wide text-[var(--color-foreground)] flex items-center gap-2">
+                    <a
+                      href={`/unscramble/${word.word}/`}
+                      class="word-tile px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wide text-[var(--color-foreground)] flex items-center gap-2 cursor-pointer"
+                      title={`Details for ${word.word.toUpperCase()}`}
+                    >
                       {word.word}
-                      <span class="w-5 h-5 rounded-md bg-[var(--color-background)] border border-[var(--color-border)] flex items-center justify-center text-[10px] font-bold text-[var(--color-muted)]">
+                      <span class="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400">
                         {word.score}
                       </span>
-                    </span>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -116,21 +120,21 @@ const canonical = `https://wordforge.app/unscramble/${cleanWord}/`;
         })}
       </div>
     ) : (
-      <div class="text-center py-12 glass-panel rounded-2xl">
-        <p class="text-[var(--color-foreground)] font-semibold text-lg">No valid words found from "{cleanWord.toUpperCase()}"</p>
+      <div class="text-center py-12 panel">
+        <p class="text-[var(--color-foreground)] font-bold text-lg">No valid words found from "{cleanWord.toUpperCase()}"</p>
         <p class="text-[var(--color-muted)] text-sm mt-1">Try different letters or check your spelling.</p>
       </div>
     )}
 
     <!-- Anagrams -->
     {anagrams.length > 0 && (
-      <div class="mt-12 glass-panel rounded-2xl p-6 sm:p-8">
+      <div class="mt-12 panel p-6 sm:p-8">
         <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-foreground)] mb-4">Anagrams of {cleanWord.toUpperCase()}</h2>
         <div class="flex flex-wrap gap-2.5">
           {anagrams.map(anagram => (
             <a
               href={`/unscramble/${anagram}/`}
-              class="px-4 py-2 bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl text-sm font-semibold uppercase tracking-wide text-[var(--color-foreground)] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5"
+              class="px-4 py-2 bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl text-sm font-semibold uppercase tracking-wide text-[var(--color-foreground)] transition-all duration-150 shadow-sm"
             >
               {anagram.toUpperCase()}
             </a>
