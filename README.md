@@ -61,13 +61,7 @@ npm run build
 
 ### Vercel (Recommended)
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel --prod
-```
+This project is set up with Vercel's GitHub Integration. Every push to the `main` branch automatically triggers a production deployment.
 
 The project is configured for static output (`output: 'static'` in `astro.config.mjs`).
 
