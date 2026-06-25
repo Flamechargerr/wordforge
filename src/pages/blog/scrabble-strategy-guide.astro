@@ -1,0 +1,99 @@
+---
+import BlogPost from '../../layouts/BlogPost.astro';
+import { SITE_URL } from '../../config';
+
+const title = 'Scrabble Strategy: 12 Tips to Score Higher Every Game';
+const description = 'Master rack management, bonus squares, bingo plays, and tile tracking with these proven Scrabble strategies used by tournament players.';
+const canonical = `${SITE_URL}/blog/scrabble-strategy-guide/`;
+---
+
+<BlogPost
+  title={title}
+  description={description}
+  canonical={canonical}
+  publishedAt="2025-06-10"
+  readingTimeMinutes={9}
+>
+  <p>
+    Scrabble is a game of luck (which tiles you draw) and skill (what you do with them). The luck part evens out over hundreds of games, but skill compounds. These twelve tips cover the strategies that separate casual players from tournament regulars. None of them require memorizing 100,000 words — they require thinking about the board differently.
+  </p>
+
+  <h2>1. Manage Your Rack, Not Just Your Play</h2>
+  <p>
+    The single biggest mistake beginners make is choosing a play based purely on this turn's score. A 20-point play that leaves you with QUVWXYZI is worse than a 12-point play that leaves you with AEINRST. After every move, look at what you are keeping. A balanced rack (3 vowels, 4 consonants, no duplicates) is worth 10-15 points of equity over the next two turns.
+  </p>
+
+  <h2>2. Learn the Bingo Stems</h2>
+  <p>
+    A bingo (playing all 7 tiles for a 50-point bonus) is the fastest way to a high score. Some 6-letter combinations combine with almost any seventh tile to form a 7-letter word. The most famous stems are:
+  </p>
+  <ul>
+    <li><strong>SATINE</strong> — forms a bingo with 22 of 26 possible seventh tiles</li>
+    <li><strong>SATINE</strong>'s rivals: <strong>SATERN</strong>, <strong>RATINE</strong>, <strong>RETINA</strong></li>
+    <li><strong>ETAERI</strong> — vowel-heavy, forms bingos with most consonants</li>
+  </ul>
+  <p>
+    Use WordForge to verify: type <code>SATINE?</code> (with a <code>?</code> wildcard) and you will see every 7-letter word that begins with these six letters plus any seventh tile.
+  </p>
+
+  <h2>3. Treat Bonus Squares as Multipliers, Not Targets</h2>
+  <p>
+    A Triple Word Square triples the score of the entire word. A Double Letter Square doubles a single tile. Many beginners obsess over landing a high-value letter on a Double Letter — but a Triple Word that uses a lowly 1-point word like QI is worth 30+ points. Calculate the <em>total</em> score of each candidate play before choosing.
+  </p>
+
+  <h2>4. Track the Tiles</h2>
+  <p>
+    Tournament players keep a tile-tracking sheet. As tiles come out of the bag, they cross off each letter. By the endgame you know exactly which tiles remain. This lets you play defense — if you know your opponent is holding Q and no U remains, you can open up a Q-friendly spot without fear.
+  </p>
+  <p>
+    For casual play, just track the high-value tiles: Q, Z, X, J, K. Knowing whether the Q is still in the bag changes your defensive calculations dramatically.
+  </p>
+
+  <h2>5. Play Parallel, Not Perpendicular</h2>
+  <p>
+    When you place a word perpendicular to an existing word, you score one new word. When you play parallel, you score multiple new words (one for each shared letter). Example: if CAT is on the board, playing DOGS parallel creates DOG, OX (if X is there), and adds an S to CAT. Parallel play doubles or triples your score for the same tiles.
+  </p>
+
+  <h2>6. Memorize the 2-Letter Words</h2>
+  <p>
+    There are 107 valid 2-letter words in the Scrabble dictionary. They are the most valuable words in the game because they let you play parallel. If you only know 20 of them, you are leaving 10-20 points per game on the table. Read our complete <a href="/blog/two-letter-scrabble-words/">guide to all 107 two-letter Scrabble words</a> and memorize the ones you don't know.
+  </p>
+
+  <h2>7. Don't Waste the S</h2>
+  <p>
+    Plurals are tempting: just slap an S on the end of an existing word for +1 point. But an S can also form a 7-letter bingo (worth +50), hook into a parallel play, or pluralize an opponent's word. Tournament players almost never use S for a +1 score. Save it for a hook or a bingo.
+  </p>
+
+  <h2>8. Swap When Your Rack Is Bad</h2>
+  <p>
+    If your rack is vowel-heavy (AAAAIII) or consonant-heavy (BCDFGHJ), you will lose 5-10 points per turn trying to play through it. Swapping costs you a turn, but a fresh rack earns back the lost turn within 2 plays. Don't be too proud to swap.
+  </p>
+
+  <h2>9. Use the Blank for Bingos, Not for Convenience</h2>
+  <p>
+    A blank tile is worth 0 points but is functionally worth 25-30 points of equity because it can complete a bingo. Using a blank to play a 20-point word wastes 75% of its value. Save the blank for when it converts a 6-letter stem into a 7-letter bingo.
+  </p>
+
+  <h2>10. Open the Board When Ahead, Close It When Behind</h2>
+  <p>
+    If you are 50+ points ahead, play defensively. Avoid opening Triple Word lanes, pluralize existing words to make hooks less attractive, and prefer short plays that don't expose bonus squares. If you are behind, take risks: open the board, leave hooks, hope your opponent doesn't see the bingo you set up.
+  </p>
+
+  <h2>11. Count the Bag Late Game</h2>
+  <p>
+    When fewer than 20 tiles remain in the bag, switch from "play your best word" mode to "play to deny your opponent" mode. If you know your opponent is fishing for a Q, do not play a U. If the only Q-friendly spot is open, leave it open if you can capitalize elsewhere first.
+  </p>
+
+  <h2>12. Verify Every Play with WordForge Before Submitting</h2>
+  <p>
+    Casual games often end with a challenge: if you play an invalid word, you lose your turn. Before committing, type your letters into WordForge and confirm the word exists. If your rack is AEINRST and you are considering STRAINER, look it up — WordForge confirms it's valid (it's an anagram of TRAINERS, RETAINS, and SERRANID).
+  </p>
+
+  <h2>Putting It All Together</h2>
+  <p>
+    Pick two or three tips to focus on per game. Trying to apply all twelve at once will overwhelm you. After 20 games of conscious practice, the high-equity plays become automatic, and your average score will jump from 250 to 350 or higher.
+  </p>
+  <p>
+    Ready to practice? Type your rack into <a href="/">WordForge</a> and sort by score. The top result is almost always your best play.
+  </p>
+</BlogPost>

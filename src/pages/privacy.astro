@@ -1,11 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { SITE_URL } from '../config';
 
 const title = "Privacy Policy | WordForge";
 const description = "WordForge's privacy policy. We do not collect personal data, use cookies, or track you across the web.";
 ---
 
-<Layout title={title} description={description} canonical="https://wordforge.app/privacy/" noindex>
+<Layout title={title} description={description} canonical={`${SITE_URL}/privacy/`} noindex>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">Privacy Policy</h1>
     <p class="text-sm text-[var(--color-muted)] mb-8">Last updated: June 2025</p>

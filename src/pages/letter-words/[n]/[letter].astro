@@ -3,6 +3,8 @@ import Layout from '../../../layouts/Layout.astro';
 import { createClientDictionary } from '../../../lib/dictionary-client';
 import { getWordsByLengthAndStartingLetter } from '../../../lib/solver';
 
+import { SITE_URL } from '../../../config';
+
 export function getStaticPaths() {
   const paths: { params: { n: string; letter: string } }[] = [];
   for (let n = 2; n <= 8; n++) {
@@ -23,7 +25,7 @@ const words = getWordsByLengthAndStartingLetter(dictionary, numN, lower);
 
 const title = `${n}-Letter Words Starting With ${upper} | Scrabble Dictionary | WordForge`;
 const description = `Complete list of ${n}-letter words starting with ${upper}. ${words.length} valid Scrabble and Words With Friends words.`;
-const canonical = `https://wordforge.app/letter-words/${n}/${lower}/`;
+const canonical = `${SITE_URL}/letter-words/${n}/${lower}/`;
 ---
 
 <Layout title={title} description={description} canonical={canonical}>
@@ -41,8 +43,11 @@ const canonical = `https://wordforge.app/letter-words/${n}/${lower}/`;
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-2">
       {n}-Letter Words Starting With <span class="text-[var(--color-accent)]">{upper}</span>
     </h1>
-    <p class="text-[var(--color-muted)] mb-8">
+    <p class="text-[var(--color-muted)] mb-4">
       {words.length} valid {n}-letter Scrabble and Words With Friends words starting with {upper}
+    </p>
+    <p class="text-sm text-[var(--color-muted)] leading-relaxed mb-8 max-w-2xl">
+      Need a <strong>{n}-letter word starting with {upper}</strong> to win your game? This page lists every valid dictionary word of length {n} beginning with the letter {upper}. Perfect for scoring big in Scrabble, finding key moves in Words With Friends, or solving daily word puzzles. Find the points for each word to maximize your game strategy!
     </p>
 
     <!-- Length Navigation -->
@@ -62,7 +67,7 @@ const canonical = `https://wordforge.app/letter-words/${n}/${lower}/`;
     </div>
 
     <!-- Words Grid -->
-    <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5">
+    <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 shadow-sm">
       {words.length > 0 ? (
         <div class="flex flex-wrap gap-2">
           {words.map(word => (
@@ -77,6 +82,25 @@ const canonical = `https://wordforge.app/letter-words/${n}/${lower}/`;
       ) : (
         <p class="text-[var(--color-muted)] text-center py-8">No {n}-letter words found starting with {upper}.</p>
       )}
+    </div>
+
+    <!-- Letter Navigation for same length -->
+    <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
+      <h3 class="text-sm font-bold text-[var(--color-foreground)] mb-4 text-center">Browse other {n}-letter words starting with:</h3>
+      <div class="flex flex-wrap justify-center gap-1.5">
+        {'abcdefghijklmnopqrstuvwxyz'.split('').map(l => (
+          <a
+            href={`/letter-words/${n}/${l}/`}
+            class={`w-8 h-8 flex items-center justify-center rounded-lg font-semibold text-xs transition-colors ${
+              l === lower
+                ? 'bg-[var(--color-accent)] text-white'
+                : 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:border-[var(--color-accent)] shadow-sm'
+            }`}
+          >
+            {l.toUpperCase()}
+          </a>
+        ))}
+      </div>
     </div>
   </div>
 </Layout>

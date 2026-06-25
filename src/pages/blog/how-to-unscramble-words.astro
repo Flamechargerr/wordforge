@@ -1,0 +1,102 @@
+---
+import BlogPost from '../../layouts/BlogPost.astro';
+import { SITE_URL } from '../../config';
+
+const title = 'How to Unscramble Words: A Complete Guide for Beginners';
+const description = 'Learn the proven techniques for unscrambling jumbled letters fast — from pattern recognition to using blank tiles strategically. Includes worked examples.';
+const canonical = `${SITE_URL}/blog/how-to-unscramble-words/`;
+---
+
+<BlogPost
+  title={title}
+  description={description}
+  canonical={canonical}
+  publishedAt="2025-06-15"
+  readingTimeMinutes={7}
+>
+  <p>
+    Whether you are stuck on a Jumble puzzle, trying to find the best Scrabble play from a confusing rack, or simply staring at seven random tiles in Words With Friends, unscrambling letters quickly is a learnable skill. This guide walks you through the mental techniques the pros use, then shows you how to use WordForge to short-circuit the hard work when you just want an answer.
+  </p>
+
+  <h2>Why Unscrambling Feels Hard</h2>
+  <p>
+    The human brain is excellent at recognizing words it has already seen, but terrible at generating all valid permutations of a set of letters. A 7-letter rack has 5,040 possible orderings, and almost all of them are nonsense. Your eyes glaze over after the first few attempts. That is not a flaw in your vocabulary — it is a fundamental limit on working memory.
+  </p>
+  <p>
+    Skilled Scrabble players work around this by building pattern recognition over thousands of games. They learn to spot common affixes (-ING, -ED, -ER), high-value two-letter words (QI, ZA, XI), and bingo stems (letters that combine with almost any seventh tile to form a 7-letter word). The good news: you can borrow these techniques immediately.
+  </p>
+
+  <h2>Technique 1: Spot Prefixes and Suffixes First</h2>
+  <p>
+    Most English words are built from a root plus one or more affixes. When you stare at scrambled letters, your first move should be to look for common affixes:
+  </p>
+  <ul>
+    <li><strong>Endings:</strong> -S, -ED, -ING, -ER, -EST, -LY, -ION, -ABLE, -MENT, -NESS</li>
+    <li><strong>Beginnings:</strong> RE-, UN-, IN-, DIS-, OVER-, OUT-, SUB-</li>
+  </ul>
+  <p>
+    If your rack contains the letters I-N-G, mentally set those aside and try to form a 4-letter word from the remaining tiles. Then add -ING. Suddenly R-A-C-K + ING becomes RACKING. This single technique unlocks a huge fraction of valid words.
+  </p>
+
+  <h2>Technique 2: Pair High-Value Letters with Vowels</h2>
+  <p>
+    Q, X, Z, and J are worth 10, 8, 10, and 8 points respectively. They are also hard to play because they need a vowel partner. Train yourself to scan for these letters first, then look for a vowel that pairs naturally: Q+U, X+A (AX, EX), Z+A (ZA), J+A (JA). If you cannot pair them, save them for a bonus-square play.
+  </p>
+
+  <h2>Technique 3: Use Blank Tiles Strategically</h2>
+  <p>
+    A blank tile (represented by <code>?</code> in WordForge) substitutes for any letter. Beginners often assign the blank to the letter they "feel" is missing. Pros do the opposite: they enumerate every possible substitution and pick the one that yields the highest-scoring word.
+  </p>
+  <p>
+    In WordForge, just type <code>?</code> (or <code>.</code> or <code>_</code>) for each blank and we will try all 26 letters in that slot. You can use up to 3 blanks at once. For example, <code>STR???</code> returns every 5-letter word starting with STR plus any two letters — perfect for Wordle-style narrowing.
+  </p>
+
+  <h2>Technique 4: Group by Length, Sort by Score</h2>
+  <p>
+    When you see 200 results from a 7-letter rack, do not scroll randomly. Filter by minimum length (skip 2-letter words unless you are desperate), then sort by Scrabble score. The highest-scoring word is almost always your best play — unless a bonus square changes the math.
+  </p>
+
+  <h2>Worked Example: Unscrambling "T R I A N G L E"</h2>
+  <p>
+    Type <code>triangle</code> into WordForge and you get 600+ words. Here is how to use the results:
+  </p>
+  <ol>
+    <li><strong>Sort by length.</strong> The longest words (8 letters) include TRAINGLE, ALTERING, INTEGRAL, and TRIANGLE itself. If you can play an 8-letter bingo, do it.</li>
+    <li><strong>Sort by score.</strong> Among 7-letter words, TRAINING and READING score well. TRAINING uses the same letters minus the E.</li>
+    <li><strong>Filter min length 5.</strong> Now you are looking at high-value 5- and 6-letter words like RATING, GRAIN, and GRANITE.</li>
+    <li><strong>Click any word</strong> to see its definition, anagrams, and Scrabble score breakdown.</li>
+  </ol>
+
+  <h2>When to Use a Solver vs. Solve by Hand</h2>
+  <p>
+    Solvers are controversial in some circles. If you are playing casual Scrabble with friends, using a solver is cheating — full stop. But if you are studying the game, learning new words, playing against a computer, or working through a crossword or Wordle puzzle, a solver is just a faster dictionary. WordForge's job is to surface every valid candidate so you can make the strategic decision about which one to play.
+  </p>
+
+  <h2>Practice Routine</h2>
+  <p>
+    To actually get better at unscrambling (rather than just using the tool), try this 10-minute daily routine:
+  </p>
+  <ol>
+    <li>Generate a random 7-letter word and scramble it.</li>
+    <li>Spend 60 seconds trying to find the original word by hand.</li>
+    <li>Type it into WordForge and browse the full list of valid words.</li>
+    <li>Note any words you missed — these are vocabulary gaps to study.</li>
+    <li>Repeat 5 times.</li>
+  </ol>
+  <p>
+    After a month you will spot common letter patterns (ING, ER, STR, TR) instantly, and your average solve time will drop dramatically.
+  </p>
+
+  <h2>Common Mistakes to Avoid</h2>
+  <ul>
+    <li><strong>Ignoring 2-letter words.</strong> They are not exciting, but they let you play parallel to existing words and score double or triple.</li>
+    <li><strong>Holding onto blanks too long.</strong> A blank played this turn for 30 points is almost always better than a blank held for 5 turns hoping for a bingo.</li>
+    <li><strong>Forgetting plural forms.</strong> If you played CAT last turn, an S this turn is +1 tile for +8 points if it lands on a bonus square.</li>
+    <li><strong>Not swapping when stuck.</strong> If your rack is all vowels or all consonants, swap. Don't waste 4 turns playing -1 point words.</li>
+  </ul>
+
+  <h2>Next Steps</h2>
+  <p>
+    Ready to practice? Head back to the <a href="/">WordForge homepage</a> and try unscrambling these classic starters: <a href="/unscramble/listen/">LISTEN</a>, <a href="/unscramble/triangle/">TRIANGLE</a>, <a href="/unscramble/silent/">SILENT</a>, <a href="/unscramble/anagram/">ANAGRAM</a>. Each one is a teaching example with a rich result set.
+  </p>
+</BlogPost>

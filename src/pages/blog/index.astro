@@ -1,0 +1,102 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { SITE_URL } from '../../config';
+
+const title = "WordForge Blog — Word Game Strategy, Scrabble Tips & Vocabulary Guides";
+const description = "In-depth guides on Scrabble strategy, Words With Friends tips, anagram puzzles, vocabulary building, and how to get the most out of WordForge's unscrambler.";
+
+const posts = [
+  {
+    slug: 'how-to-unscramble-words',
+    title: 'How to Unscramble Words: A Complete Guide for Beginners',
+    description: 'Learn the proven techniques for unscrambling jumbled letters fast — from pattern recognition to using blank tiles strategically.',
+    publishedAt: '2025-06-15',
+    readingTimeMinutes: 7,
+  },
+  {
+    slug: 'scrabble-strategy-guide',
+    title: 'Scrabble Strategy: 12 Tips to Score Higher Every Game',
+    description: 'Master rack management, bonus squares, bingo plays, and tile tracking with these proven Scrabble strategies used by tournament players.',
+    publishedAt: '2025-06-10',
+    readingTimeMinutes: 9,
+  },
+  {
+    slug: 'words-with-friends-tips',
+    title: 'Words With Friends: 10 Tips to Beat Your Friends More Often',
+    description: 'WWF has different scoring and a different dictionary than Scrabble. Here\'s how to adapt your play style and dominate your matches.',
+    publishedAt: '2025-06-05',
+    readingTimeMinutes: 6,
+  },
+  {
+    slug: 'two-letter-scrabble-words',
+    title: 'All 107 Two-Letter Scrabble Words You Need to Memorize',
+    description: 'Two-letter words are the secret weapon of every Scrabble champion. Here\'s the complete list with definitions and when to play them.',
+    publishedAt: '2025-05-28',
+    readingTimeMinutes: 8,
+  },
+  {
+    slug: 'wordle-strategy',
+    title: 'Wordle Strategy: How to Solve in 3 Guesses or Fewer',
+    description: 'Use WordForge\'s letter-words index to narrow down Wordle candidates fast. Plus the best opening words and how to handle repeated letters.',
+    publishedAt: '2025-05-20',
+    readingTimeMinutes: 5,
+  },
+  {
+    slug: 'highest-scoring-scrabble-words',
+    title: 'The 15 Highest-Scoring Scrabble Words of All Time',
+    description: 'From OXYPHENBUTAZONE (1,778 points) to MUZJIKS (29 with bonus squares), discover the legendary Scrabble plays and what made them possible.',
+    publishedAt: '2025-05-12',
+    readingTimeMinutes: 6,
+  },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: `${SITE_URL}/` },
+  { name: 'Blog', url: `${SITE_URL}/blog/` },
+];
+---
+
+<Layout title={title} description={description} canonical={`${SITE_URL}/blog/`} breadcrumbs={breadcrumbs}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)]" aria-current="page">Blog</li>
+      </ol>
+    </nav>
+
+    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--color-foreground)] mb-3">
+      WordForge Blog
+    </h1>
+    <p class="text-[var(--color-muted)] mb-10 max-w-2xl">
+      Strategy guides, dictionary deep-dives, and tutorials to help you win at Scrabble, Words With Friends, Wordle, and every other word game you play.
+    </p>
+
+    <div class="space-y-6">
+      {posts.map(post => (
+        <a
+          href={`/blog/${post.slug}/`}
+          class="block panel p-6 hover:border-[var(--color-accent)] transition-all duration-150 hover:shadow-md"
+        >
+          <div class="flex items-center gap-3 text-xs text-[var(--color-muted)] mb-2 font-medium">
+            <time datetime={post.publishedAt}>
+              {new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+            <span aria-hidden="true">·</span>
+            <span>{post.readingTimeMinutes} min read</span>
+          </div>
+          <h2 class="text-xl font-bold text-[var(--color-foreground)] mb-2 group-hover:text-[var(--color-accent)]">
+            {post.title}
+          </h2>
+          <p class="text-sm text-[var(--color-muted)] leading-relaxed">
+            {post.description}
+          </p>
+          <span class="inline-block mt-3 text-sm font-bold text-[var(--color-accent)]">
+            Read article →
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>

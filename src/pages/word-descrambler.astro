@@ -1,10 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Solver from '../components/Solver.tsx';
+import { SITE_URL } from '../config';
 
 const title = "Word Descrambler — Descramble Letters Into Words";
 const description = "The fastest word descrambler online. Descramble letters to find valid words for Scrabble, Wordscapes, and more. Highly optimized with zero ads.";
-const canonical = "https://wordforge.app/word-descrambler/";
+const canonical = `${SITE_URL}/word-descrambler/`;
 ---
 
 <Layout title={title} description={description} canonical={canonical}>

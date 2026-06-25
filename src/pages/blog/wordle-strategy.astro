@@ -1,0 +1,76 @@
+---
+import BlogPost from '../../layouts/BlogPost.astro';
+import { SITE_URL } from '../../config';
+
+const title = 'Wordle Strategy: How to Solve in 3 Guesses or Fewer';
+const description = 'Use WordForge\'s letter-words index to narrow down Wordle candidates fast. Plus the best opening words and how to handle repeated letters.';
+const canonical = `${SITE_URL}/blog/wordle-strategy/`;
+---
+
+<BlogPost
+  title={title}
+  description={description}
+  canonical={canonical}
+  publishedAt="2025-05-20"
+  readingTimeMinutes={5}
+>
+  <p>
+    Wordle's simple premise — guess a 5-letter word in 6 tries, with color-coded feedback — hides surprising strategic depth. The right opening word, an efficient second-guess strategy, and a tool for enumerating candidates can push your average solve down to 3 guesses. Here's the system.
+  </p>
+
+  <h2>The Best Opening Words</h2>
+  <p>
+    An opening word's job is to gather information. The most efficient openers use common letters and avoid duplicates. Based on letter frequency in 5-letter English words, the top openers are:
+  </p>
+  <ul>
+    <li><strong>CRANE</strong> — covers C, R, A, N, E (all top-10 letters)</li>
+    <li><strong>SLATE</strong> — covers S, L, A, T, E</li>
+    <li><strong>AUDIO</strong> — covers all 5 vowels in one guess (controversial but information-dense)</li>
+    <li><strong>AROSE</strong> — covers A, R, O, S, E</li>
+    <li><strong>RAISE</strong> — covers R, A, I, S, E</li>
+  </ul>
+  <p>
+    Pick one and stick with it. Switching openers every day prevents you from building intuition for which follow-ups work best with each outcome.
+  </p>
+
+  <h2>Second-Guess Strategy</h2>
+  <p>
+    After your opener, you have three pieces of information: green (correct position), yellow (wrong position, but in word), and gray (not in word). Your second guess should:
+  </p>
+  <ol>
+    <li><strong>Test new letters.</strong> Don't re-use gray letters. Use letters you haven't tested yet.</li>
+    <li><strong>Avoid known-bad positions.</strong> If R was yellow in slot 2, don't put R in slot 2 again.</li>
+    <li><strong>Cover remaining common letters.</strong> The union of your first two guesses should cover at least 8-9 distinct letters.</li>
+  </ol>
+  <p>
+    If you opened with CRANE and got C___E (C and E in correct positions), good second guesses include FILTH, SLOTH, or BOUGH — they test multiple new letters in one shot.
+  </p>
+
+  <h2>Using WordForge to Enumerate Candidates</h2>
+  <p>
+    Once you have green and yellow letters, you can use WordForge to list every valid 5-letter word matching what you know. Example: you know the word is _R_N_, with R in slot 2 and N in slot 4. Visit <a href="/letter-words/5/r/">5-letter R-words</a> for the full list, then scan for words with N as the fourth letter.
+  </p>
+  <p>
+    For a wildcard approach, type <code>CR?N?</code> into WordForge (where <code>?</code> is the blank). You'll get every 5-letter word matching that pattern, sorted by Scrabble score.
+  </p>
+
+  <h2>Handling Repeated Letters</h2>
+  <p>
+    Repeated letters (e.g., LLAMA, LETTER, SAGAS) trip up many players. If your first two guesses show only one of a letter that you suspect appears twice, test the duplicate in your third guess. Example: if A is green in slot 1, try a word with A in slot 4 or 5 to test for a repeat.
+  </p>
+
+  <h2>Avoiding the 6-Guess Trap</h2>
+  <p>
+    The most common cause of a 5- or 6-guess solve is "guessing the answer" too early instead of "narrowing the candidate set." If you have 4 possible answers (BRINE, CRINE, DRINE, FRINE), don't guess BRINE hoping to nail it. Guess a word like CHAMP that distinguishes them in one shot — C eliminates CRINE, H eliminates none of them (rare), A eliminates BRINE if A is yellow, etc. This is called "covering the candidate space."
+  </p>
+
+  <h2>Hard Mode Considerations</h2>
+  <p>
+    In Hard Mode, you must use revealed hints in subsequent guesses. This makes candidate-space-covering guesses impossible — you can only guess plausible answers. Strategy shifts to: pick the answer with the most common letters among remaining candidates.
+  </p>
+
+  <h2>Practice Routine</h2>
+  <p>
+    To get faster at Wordle, drill 5-letter words. Visit <a href="/letter-words/5/a/">5-letter A-words</a>, <a href="/letter-words/5/s/">5-letter S-words</a>, etc. and skim the lists. The more 5-letter words you internalize, the faster you'll spot candidates during the daily puzzle.
+  </p>
+</BlogPost>

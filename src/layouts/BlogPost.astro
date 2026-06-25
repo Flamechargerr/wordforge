@@ -1,0 +1,161 @@
+---
+/**
+ * Blog article layout for WordForge.
+ * Wraps the main Layout with a reading-optimized container.
+ */
+import Layout from './Layout.astro';
+import { SITE_URL } from '../config';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  publishedAt: string;
+  updatedAt?: string;
+  readingTimeMinutes?: number;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  publishedAt,
+  updatedAt,
+  readingTimeMinutes,
+} = Astro.props;
+
+const breadcrumbs = [
+  { name: 'Home', url: `${SITE_URL}/` },
+  { name: 'Blog', url: `${SITE_URL}/blog/` },
+  { name: title, url: canonical },
+];
+
+const publishedDate = new Date(publishedAt).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const updatedDate = updatedAt
+  ? new Date(updatedAt).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  : null;
+---
+
+<Layout title={title} description={description} canonical={canonical} breadcrumbs={breadcrumbs}>
+  <article class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2">
+        <li><a href="/" class="hover:text-[var(--color-foreground)] transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/blog/" class="hover:text-[var(--color-foreground)] transition-colors">Blog</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--color-foreground)] truncate max-w-[60%]" aria-current="page">{title}</li>
+      </ol>
+    </nav>
+
+    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--color-foreground)] mb-4">
+      {title}
+    </h1>
+
+    <div class="flex flex-wrap items-center gap-3 text-sm text-[var(--color-muted)] mb-8 pb-6 border-b border-[var(--color-border)]">
+      <time datetime={publishedAt}>{publishedDate}</time>
+      {updatedDate && (
+        <span class="text-[var(--color-muted)]">
+          · Updated {updatedDate}
+        </span>
+      )}
+      {readingTimeMinutes && (
+        <span class="text-[var(--color-muted)]">· {readingTimeMinutes} min read</span>
+      )}
+    </div>
+
+    <div class="article-body">
+      <slot />
+    </div>
+
+    <footer class="mt-12 pt-8 border-t border-[var(--color-border)]">
+      <p class="text-sm text-[var(--color-muted)] mb-4">
+        Ready to unscramble your own letters?
+      </p>
+      <a
+        href="/"
+        class="inline-flex items-center px-5 py-2.5 bg-[var(--color-accent)] text-white font-bold rounded-xl hover:bg-[var(--color-accent-hover)] transition-colors shadow-sm"
+      >
+        Open WordForge Unscrambler →
+      </a>
+    </footer>
+  </article>
+</Layout>
+
+<style>
+  .article-body {
+    color: var(--color-foreground);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .article-body :global(p) {
+    margin-bottom: 1.25rem;
+    color: var(--color-muted);
+  }
+  .article-body :global(strong) {
+    color: var(--color-foreground);
+    font-weight: 700;
+  }
+  .article-body :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-foreground);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+  .article-body :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-foreground);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.015em;
+  }
+  .article-body :global(ul) {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--color-muted);
+  }
+  .article-body :global(ol) {
+    list-style: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--color-muted);
+  }
+  .article-body :global(li) {
+    margin-bottom: 0.5rem;
+  }
+  .article-body :global(a) {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .article-body :global(a:hover) {
+    text-decoration: underline;
+  }
+  .article-body :global(code) {
+    background: rgba(148, 163, 184, 0.15);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    color: var(--color-accent);
+  }
+  .article-body :global(blockquote) {
+    border-left: 3px solid var(--color-accent);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: var(--color-muted);
+    font-style: italic;
+  }
+</style>

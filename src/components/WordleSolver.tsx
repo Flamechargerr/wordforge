@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useMemo } from 'preact/hooks';
 import type { Dictionary } from '../types';
 import { createClientDictionary } from '../lib/dictionary-client';
 import { track } from '../services/analytics';
@@ -16,8 +16,8 @@ export default function WordleSolver() {
     createClientDictionary().then(setDictionary);
   }, []);
 
-  // Extract all 5-letter words from dictionary
-  const getFiveLetterWords = () => {
+  // Memoize all 5-letter words from dictionary
+  const fiveLetterWords = useMemo(() => {
     if (!dictionary) return [];
     const list: string[] = [];
     for (const words of dictionary.index.values()) {
@@ -28,12 +28,11 @@ export default function WordleSolver() {
       }
     }
     return [...new Set(list)];
-  };
+  }, [dictionary]);
 
   useEffect(() => {
     if (!dictionary) return;
 
-    const allWords = getFiveLetterWords();
     const cleanYellow = yellow.toLowerCase().replace(/[^a-z]/g, '').split('');
     const cleanGray = gray.toLowerCase().replace(/[^a-z]/g, '').split('');
 
@@ -43,7 +42,7 @@ export default function WordleSolver() {
       char => !activeGreenLetters.includes(char) && !cleanYellow.includes(char)
     );
 
-    const matches = allWords.filter(word => {
+    const matches = fiveLetterWords.filter(word => {
       // 1. Green check (exact positions)
       for (let i = 0; i < 5; i++) {
         if (activeGreenLetters[i] && word[i] !== activeGreenLetters[i]) {

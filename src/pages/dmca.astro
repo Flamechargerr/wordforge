@@ -1,11 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { SITE_URL, CONTACT_EMAIL } from '../config';
 
 const title = "DMCA Policy | WordForge";
 const description = "WordForge's DMCA policy.";
 ---
 
-<Layout title={title} description={description} canonical="https://wordforge.app/dmca/" noindex>
+<Layout title={title} description={description} canonical={`${SITE_URL}/dmca/`} noindex>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">DMCA Policy</h1>
 
@@ -28,7 +29,7 @@ const description = "WordForge's DMCA policy.";
 
       <h2 class="text-lg font-semibold text-[var(--color-foreground)] mt-6">Contact</h2>
       <p>
-        Send DMCA notices to <a href="mailto:hello@wordforge.app" class="text-[var(--color-accent)] hover:underline">hello@wordforge.app</a>.
+        Send DMCA notices to <a href={`mailto:${CONTACT_EMAIL}`} class="text-[var(--color-accent)] hover:underline">{CONTACT_EMAIL}</a>.
       </p>
     </div>
   </div>

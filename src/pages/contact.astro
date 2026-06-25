@@ -1,11 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { SITE_URL, CONTACT_EMAIL } from '../config';
 
 const title = "Contact | WordForge";
 const description = "Contact the WordForge team. Send feedback, report bugs, or suggest features.";
 ---
 
-<Layout title={title} description={description} canonical="https://wordforge.app/contact/" noindex>
+<Layout title={title} description={description} canonical={`${SITE_URL}/contact/`} noindex>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">Contact</h1>
 
@@ -16,7 +17,7 @@ const description = "Contact the WordForge team. Send feedback, report bugs, or 
 
       <h2 class="text-lg font-semibold text-[var(--color-foreground)] mt-6">Email</h2>
       <p>
-        Send us an email at <a href="mailto:hello@wordforge.app" class="text-[var(--color-accent)] hover:underline">hello@wordforge.app</a>. We typically respond within 24-48 hours.
+        Send us an email at <a href={`mailto:${CONTACT_EMAIL}`} class="text-[var(--color-accent)] hover:underline">{CONTACT_EMAIL}</a>. We typically respond within 24-48 hours.
       </p>
 
       <h2 class="text-lg font-semibold text-[var(--color-foreground)] mt-6">Before You Contact</h2>

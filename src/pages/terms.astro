@@ -1,11 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { SITE_URL } from '../config';
 
 const title = "Terms of Service | WordForge";
 const description = "WordForge's terms of service. Use the tool at your own risk for personal, non-commercial purposes.";
 ---
 
-<Layout title={title} description={description} canonical="https://wordforge.app/terms/" noindex>
+<Layout title={title} description={description} canonical={`${SITE_URL}/terms/`} noindex>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">Terms of Service</h1>
     <p class="text-sm text-[var(--color-muted)] mb-8">Last updated: June 2025</p>

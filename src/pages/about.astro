@@ -1,11 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { SITE_URL } from '../config';
 
 const title = "About WordForge";
 const description = "Learn about WordForge — the fastest, cleanest word unscrambler on the internet. Built for Scrabble, Words With Friends, and word puzzle enthusiasts.";
 ---
 
-<Layout title={title} description={description} canonical="https://wordforge.app/about/">
+<Layout title={title} description={description} canonical={`${SITE_URL}/about/`}>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
     <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-foreground)] mb-6">About WordForge</h1>
     

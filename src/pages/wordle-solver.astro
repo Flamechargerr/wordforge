@@ -1,10 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import WordleSolver from '../components/WordleSolver.tsx';
+import { SITE_URL } from '../config';
 
 const title = "Wordle Solver — Interactive Wordle Helper & Suggestion Tool";
 const description = "Solve daily Wordle puzzles instantly. Enter correct letters, present letters, and excluded letters to find every valid 5-letter suggestion.";
-const canonical = "https://wordforge.app/wordle-solver/";
+const canonical = `${SITE_URL}/wordle-solver/`;
 ---
 
 <Layout title={title} description={description} canonical={canonical}>

@@ -233,15 +233,24 @@ export default function Solver({ initialLetters = '', mode = 'unscramble' }: Sol
       {/* Search Input Block */}
       <div class="relative group">
         <label for="solver-input" class="sr-only">Enter letters to unscramble</label>
+        
+        {/* Search Icon */}
+        <div class="absolute left-5 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+          <svg class="w-5 h-5 text-slate-400 dark:text-slate-500 group-focus-within:text-blue-500 transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+
         <input
           ref={inputRef}
           id="solver-input"
           type="text"
           value={input}
           onInput={(e) => handleInput((e.target as HTMLInputElement).value)}
-          placeholder={mode === 'anagram' ? "Enter anagram letters (e.g., listen)..." : "Enter scrambled letters (use ?, * or space for blank)..."}
-          class="w-full px-5 py-4 text-lg sm:text-xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl text-[var(--color-foreground)] placeholder:text-[var(--color-muted)] transition-all shadow-sm"
+          placeholder={!dictionary ? "Loading dictionary database..." : mode === 'anagram' ? "Enter anagram letters (e.g., listen)..." : "Enter scrambled letters (use ?, * or space for blank)..."}
+          class="w-full pl-13 pr-32 py-4 text-base sm:text-lg bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl text-[var(--color-foreground)] placeholder:text-[var(--color-muted)] transition-all shadow-sm focus:outline-none"
           maxLength={15}
+          disabled={!dictionary}
           autocomplete="off"
           autocapitalize="off"
           spellcheck={false}
@@ -252,15 +261,15 @@ export default function Solver({ initialLetters = '', mode = 'unscramble' }: Sol
         </div>
 
         {/* Input indicators */}
-        <div class="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-3">
-          {isLoading && (
-            <div class="w-5 h-5 border-2 border-slate-200 dark:border-slate-800 border-t-blue-600 rounded-full animate-spin" />
+        <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+          {(!dictionary || isLoading) && (
+            <div class="w-5 h-5 border-2 border-slate-200 dark:border-slate-850/50 border-t-blue-600 rounded-full animate-spin" title={!dictionary ? "Loading dictionary database..." : "Searching..."} />
           )}
           <button
             onClick={() => setShowOptions(!showOptions)}
-            class={`p-2 rounded-xl border transition-all ${
+            class={`p-2 rounded-xl border transition-all cursor-pointer ${
               showOptions || prefix || suffix || contains || gameMode !== 'scrabble'
-                ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400'
+                ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 font-bold'
                 : 'bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'
             }`}
             title="Advanced Search Filters & Options"
@@ -443,7 +452,7 @@ export default function Solver({ initialLetters = '', mode = 'unscramble' }: Sol
                         title={`View definition & details for ${word.word.toUpperCase()}`}
                       >
                         {renderWordWithWildcards(word.word, input)}
-                        <span class="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-700 group-hover:bg-white flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400 transition-colors">
+                        <span class="score-badge">
                           {word.score}
                         </span>
                       </a>

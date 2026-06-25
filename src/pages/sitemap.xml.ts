@@ -1,8 +1,9 @@
 import type { APIRoute } from 'astro';
 import { TOP_WORDS } from '../lib/top-words';
+import { SITE_URL } from '../config';
 
 export const GET: APIRoute = async () => {
-  const baseUrl = 'https://wordforge.app';
+  const baseUrl = SITE_URL;
   
   // Core pages
   const routes = [

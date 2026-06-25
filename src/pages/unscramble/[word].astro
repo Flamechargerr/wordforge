@@ -4,6 +4,7 @@ import { createServerDictionary } from '../../lib/dictionary-server';
 import { solve, getAnagrams } from '../../lib/solver';
 import { ALL_TOP_WORDS } from '../../lib/top-words';
 import { getWordDefinition } from '../../lib/definitions';
+import { SITE_URL } from '../../config';
 
 export function getStaticPaths() {
   // Curated common words people actually search for, mixed with top words
@@ -53,10 +54,42 @@ const description = definition && definition.meanings.length > 0
   ? `Unscramble ${cleanWord.toUpperCase()} to find all valid words. Meaning of ${cleanWord}: ${definition.meanings[0].definition.slice(0, 120)}... Find Scrabble & Words With Friends points.`
   : `Unscramble ${cleanWord.toUpperCase()} and find all valid words. ${results.words.length} words found, including ${longestWords.slice(0, 3).map(w => w.word).join(', ')}. Solve word puzzles, Scrabble, and Words With Friends.`;
 
-const canonical = `https://wordforge.app/unscramble/${cleanWord}/`;
+const canonical = `${SITE_URL}/unscramble/${cleanWord}/`;
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": `How many words can you make from the letters ${cleanWord.toUpperCase()}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `You can form ${results.words.length} valid words from the letters ${cleanWord.toUpperCase()} in Scrabble and Words With Friends.`
+      }
+    },
+    ...(longestWords[0] ? [{
+      "@type": "Question",
+      "name": `What is the longest word you can form from ${cleanWord.toUpperCase()}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `The longest word you can form from ${cleanWord.toUpperCase()} is ${longestWords[0].word.toUpperCase()} (${maxLength} letters), worth ${longestWords[0].score} points.`
+      }
+    }] : []),
+    ...(bestWords[0] ? [{
+      "@type": "Question",
+      "name": `What is the highest-scoring word from the letters ${cleanWord.toUpperCase()}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `The highest-scoring word from the letters ${cleanWord.toUpperCase()} is ${bestWords[0].word.toUpperCase()}, which is worth ${highestScore} points in Scrabble.`
+      }
+    }] : [])
+  ]
+};
 ---
 
 <Layout title={title} description={description} canonical={canonical}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
     <!-- Breadcrumbs -->
     <nav class="text-sm text-[var(--color-muted)] mb-6" aria-label="Breadcrumb">
@@ -194,7 +227,7 @@ const canonical = `https://wordforge.app/unscramble/${cleanWord}/`;
                       title={`Details for ${word.word.toUpperCase()}`}
                     >
                       {word.word}
-                      <span class="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                      <span class="score-badge">
                         {word.score}
                       </span>
                     </a>
@@ -229,44 +262,71 @@ const canonical = `https://wordforge.app/unscramble/${cleanWord}/`;
       </div>
     )}
 
+    <!-- Explore Letter Directories -->
+    <div class="mt-12 panel p-6 sm:p-8">
+      <h2 class="text-xl font-bold text-[var(--color-foreground)] mb-3">Explore Word Lists</h2>
+      <p class="text-sm text-[var(--color-muted)] mb-4 leading-relaxed">
+        Find more words starting with or containing the letters from <strong>{cleanWord.toUpperCase()}</strong>:
+      </p>
+      <div class="flex flex-wrap gap-2.5">
+        {[...new Set(cleanWord.split(''))].sort().map(l => (
+          <a
+            href={`/words-starting-with/${l}/`}
+            class="px-3.5 py-2 bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent-subtle)] rounded-xl text-xs font-bold uppercase tracking-wide text-[var(--color-foreground)] transition-all duration-150 shadow-sm"
+          >
+            Words starting with {l.toUpperCase()}
+          </a>
+        ))}
+      </div>
+    </div>
+
     <!-- FAQ -->
-    <div class="mt-8 space-y-4">
+    <div class="mt-12 space-y-4">
       <h2 class="text-xl font-bold text-[var(--color-foreground)]">Frequently Asked Questions</h2>
-      <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
-        <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+      <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl" open>
+        <summary class="px-5 py-4 font-semibold text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between hover:text-[var(--color-accent)] transition-colors">
           How many words can you make from {cleanWord.toUpperCase()}?
           <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
         </summary>
-        <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
-          From the letters "{cleanWord.toUpperCase()}", you can make <strong>{results.words.length} valid words</strong>.
+        <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed border-t border-slate-100 dark:border-slate-850/40 pt-4 mt-1">
+          From the letters "{cleanWord.toUpperCase()}", you can make <strong>{results.words.length} valid words</strong> in standard word games. These include words of various lengths, starting from 2-letter words up to {maxLength}-letter words, all verified against official dictionaries.
         </div>
       </details>
-      <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
-        <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
-          What is the longest word from {cleanWord.toUpperCase()}?
-          <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
-        </summary>
-        <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
-          The longest word from "{cleanWord.toUpperCase()}" is {longestWords[0]?.word.toUpperCase()} ({maxLength} letters).
-        </div>
-      </details>
-      <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
-        <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
-          What is the highest-scoring word from {cleanWord.toUpperCase()}?
-          <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
-        </summary>
-        <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
-          The highest-scoring Scrabble word from "{cleanWord.toUpperCase()}" is "{bestWords[0]?.word.toUpperCase()}" worth <strong>{highestScore} points</strong>.
-        </div>
-      </details>
+      {longestWords[0] && (
+        <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+          <summary class="px-5 py-4 font-semibold text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between hover:text-[var(--color-accent)] transition-colors">
+            What is the longest word from {cleanWord.toUpperCase()}?
+            <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+          </summary>
+          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed border-t border-slate-100 dark:border-slate-850/40 pt-4 mt-1">
+            The longest word you can form from "{cleanWord.toUpperCase()}" is <a href={`/unscramble/${longestWords[0].word.toLowerCase()}/`} class="text-[var(--color-accent)] font-extrabold hover:underline uppercase">{longestWords[0].word}</a>, which is {maxLength} letters long and worth {longestWords[0].score} points in Scrabble.
+          </div>
+        </details>
+      )}
+      {bestWords[0] && (
+        <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
+          <summary class="px-5 py-4 font-semibold text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between hover:text-[var(--color-accent)] transition-colors">
+            What is the highest-scoring word from {cleanWord.toUpperCase()}?
+            <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
+          </summary>
+          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed border-t border-slate-100 dark:border-slate-850/40 pt-4 mt-1">
+            The highest-scoring word from the letters "{cleanWord.toUpperCase()}" is <a href={`/unscramble/${bestWords[0].word.toLowerCase()}/`} class="text-[var(--color-accent)] font-extrabold hover:underline uppercase">{bestWords[0].word}</a>, worth <strong>{highestScore} points</strong> in Scrabble.
+          </div>
+        </details>
+      )}
       {anagrams.length > 0 && (
         <details class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl">
-          <summary class="px-5 py-4 font-medium text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between">
+          <summary class="px-5 py-4 font-semibold text-[var(--color-foreground)] cursor-pointer list-none flex items-center justify-between hover:text-[var(--color-accent)] transition-colors">
             What are the anagrams of {cleanWord.toUpperCase()}?
             <span class="text-[var(--color-muted)] group-open:rotate-180 transition-transform">&#9662;</span>
           </summary>
-          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed">
-            The anagrams of "{cleanWord.toUpperCase()}" are: {anagrams.slice(0, 10).map(a => a.toUpperCase()).join(', ')}.
+          <div class="px-5 pb-4 text-[var(--color-muted)] text-sm leading-relaxed border-t border-slate-100 dark:border-slate-850/40 pt-4 mt-1">
+            The direct anagrams of "{cleanWord.toUpperCase()}" (words using all these letters) are:
+            <div class="flex flex-wrap gap-2.5 mt-2">
+              {anagrams.map(a => (
+                <a href={`/unscramble/${a.toLowerCase()}/`} class="text-[var(--color-accent)] font-extrabold hover:underline uppercase">{a}</a>
+              ))}
+            </div>
           </div>
         </details>
       )}

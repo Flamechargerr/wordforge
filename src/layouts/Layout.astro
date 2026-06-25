@@ -5,6 +5,7 @@
  * Zero JavaScript by default — only the solver island hydrates.
  */
 
+import { SITE_URL } from '../config';
 import '../styles/global.css';
 
 interface Props {
@@ -18,8 +19,8 @@ interface Props {
 const {
   title = "WordForge — Unscramble Any Letters Into Valid Words",
   description = "The fastest word unscrambler on the internet. Enter scrambled letters and instantly discover every valid Scrabble and Words With Friends word. 370,000+ word dictionary.",
-  canonical = "https://wordforge.app/",
-  ogImage = "https://wordforge.app/og-image.png",
+  canonical = new URL(Astro.url.pathname, SITE_URL).href,
+  ogImage = `${SITE_URL}/og-image.png`,
   noindex = false,
 } = Astro.props;
 
@@ -136,6 +137,7 @@ const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
         />
       )
     }
+    <slot name="head" />
   </head>
 
   <body class="min-h-[100dvh] flex flex-col">
@@ -198,7 +200,7 @@ const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
                <ul class="space-y-2 text-xs font-semibold">
                  <li><a href="/word-descrambler/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Word Descrambler</a></li>
                  <li><a href="/word-scramble/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Scramble Solver</a></li>
-                 <li><a href="/about/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">About Us</a></li>
+                 <li><a href="/blog/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Word Strategy Blog</a></li>
                </ul>
             </div>
             <div>

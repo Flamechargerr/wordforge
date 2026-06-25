@@ -1,0 +1,74 @@
+---
+import BlogPost from '../../layouts/BlogPost.astro';
+import { SITE_URL } from '../../config';
+
+const title = 'The 15 Highest-Scoring Scrabble Words of All Time';
+const description = 'From OXYPHENBUTAZONE (1,778 points) to MUZJIKS (29 with bonus squares), discover the legendary Scrabble plays and what made them possible.';
+const canonical = `${SITE_URL}/blog/highest-scoring-scrabble-words/`;
+---
+
+<BlogPost
+  title={title}
+  description={description}
+  canonical={canonical}
+  publishedAt="2025-05-12"
+  readingTimeMinutes={6}
+>
+  <p>
+    Scrabble's theoretical maximum score for a single play is 1,962 points — a feat that requires an 8-letter word placed across two Triple Word squares, with high-value letters on Double Letter squares, plus the 50-point bingo bonus. Nobody has ever done it in a real game. But the legendary high-scoring plays that <em>have</em> been documented are remarkable enough.
+  </p>
+
+  <h2>1. OXYPHENBUTAZONE — 1,778 Points</h2>
+  <p>
+    The highest single-play score ever recorded in a real game. Karl Khoshnaw played OXYPHENBUTAZONE (an anti-inflammatory drug) in 1982 across three Triple Word squares, with the O on a Double Letter. The word itself is 15 letters long and uses the rare letters X, Y, Z, B, and H — perfect storm of tile value and bonus-square placement.
+  </p>
+
+  <h2>2. SESQUIOXIDIZING — 2,044 Points (Theoretical)</h2>
+  <p>
+    Never played in a real game, but mathematically possible. The word would need to land across three Triple Word squares with multiple Double Letter multipliers. The compound is real chemistry terminology for a process involving both oxidation and deoxidation.
+  </p>
+
+  <h2>3. CAZIQUES — 392 Points</h2>
+  <p>
+    Karl Khoshnaw's earlier record (before OXYPHENBUTAZONE). CAZIQUES (plural of "cacique," a West Indian chief) scores 27 points base, with a Q and Z worth 10 each. Across two Triple Word squares plus the bingo bonus: 27 × 9 + 50 = 293. Add the cross-words and you reach 392.
+  </p>
+
+  <h2>4. QUIXOTRY — 365 Points</h2>
+  <p>
+    Michael Cresta played QUIXOTRY in 2006, a quixotic act indeed. The word contains both Q and X — 20 points of high-value tiles — and was placed across three Triple Word squares. The Q landed on a Double Letter for 20 points, then tripled three times.
+  </p>
+
+  <h2>5. MUZJIKS — 128 Points (Opening Play)</h2>
+  <p>
+    The highest-scoring opening move in Scrabble history. MUZJIKS (a Russian peasant) is worth 29 points base, but the opening move covers the center Double Word square. With a Z worth 10 on a Double Letter, the math works out to 128. Look it up on WordForge: type <code>muzjiks</code> and you'll see it's a valid bingo word.
+  </p>
+
+  <h2>6-10. Other Notable Bingos</h2>
+  <ul>
+    <li><strong>QUARTZY</strong> — 165 points on a Triple Letter placement of Z and Q</li>
+    <li><strong>SYZYGY</strong> — 93 points base, more with bonuses (3 Y's plus Z)</li>
+    <li><strong>JAZZIEST</strong> — 88 points base with Z, Z, J</li>
+    <li><strong>EXORCIZE</strong> — 78 points base with X, Z</li>
+    <li><strong>SQUEEZERS</strong> — 75 points base with Q, Z, Z</li>
+  </ul>
+
+  <h2>What These Plays Have in Common</h2>
+  <p>
+    Every legendary Scrabble play combines three elements: a long word (7+ letters for bingo bonus), multiple high-value tiles (Q, Z, X, J), and Triple Word or Triple Letter placement. Missing any of these three drops you out of the top scores.
+  </p>
+
+  <h2>How to Spot a High-Scoring Opportunity</h2>
+  <p>
+    Most of us will never play a 1,000-point word. But you can spot 100+ point opportunities by:
+  </p>
+  <ol>
+    <li><strong>Tracking Triple Word square openings.</strong> If a Triple Word is reachable with a 7-letter word, plan for it.</li>
+    <li><strong>Hoarding high-value tiles for bonus plays.</strong> Don't dump your Q on a 12-point play. Save it for a Triple Letter or Triple Word placement.</li>
+    <li><strong>Recognizing bingo stems.</strong> SATINE, RETINA, and ETAERI combine with almost any seventh tile. Practice with WordForge: type <code>SATINE?</code> (with <code>?</code> as a blank) to see every 7-letter bingo you can form.</li>
+  </ol>
+
+  <h2>Verify Before You Play</h2>
+  <p>
+    If you spot what looks like a record-breaking play, verify the word exists before submitting. WordForge accepts OXYPHENBUTAZONE, CAZIQUES, QUIXOTRY, MUZJIKS, and all the others. Type any of them into the solver to see the score breakdown — and start planning your own legendary play.
+  </p>
+</BlogPost>

@@ -1,0 +1,75 @@
+---
+import BlogPost from '../../layouts/BlogPost.astro';
+import { SITE_URL } from '../../config';
+
+const title = 'Words With Friends: 10 Tips to Beat Your Friends More Often';
+const description = 'WWF has different scoring and a different dictionary than Scrabble. Here\'s how to adapt your play style and dominate your matches.';
+const canonical = `${SITE_URL}/blog/words-with-friends-tips/`;
+---
+
+<BlogPost
+  title={title}
+  description={description}
+  canonical={canonical}
+  publishedAt="2025-06-05"
+  readingTimeMinutes={6}
+>
+  <p>
+    Words With Friends (WWF) looks like Scrabble, plays like Scrabble, but scores differently and uses a slightly different dictionary. If you have been losing to friends despite being a competent Scrabble player, the differences are probably why. Here are ten tips calibrated for WWF specifically.
+  </p>
+
+  <h2>1. Know the Score Differences</h2>
+  <p>
+    WWF awards higher point values to some letters than Scrabble does. Notable differences: B, C, M, and P are worth 4 in WWF (3 in Scrabble). H is 4 in WWF (4 in Scrabble — same). Y is 3 in WWF (4 in Scrabble). The net effect: consonant-heavy racks score higher in WWF, vowel-heavy racks score slightly lower.
+  </p>
+
+  <h2>2. WWF Uses a Slightly Larger Dictionary</h2>
+  <p>
+    The WWF dictionary includes some words not in Scrabble's TWL (e.g., CIRCA, JIN, VEX). It also excludes a few Scrabble-legal words. When in doubt, type your candidate into <a href="/">WordForge</a> — we use a comprehensive dictionary that covers the union of both lists.
+  </p>
+
+  <h2>3. The Bonus Tiles Are Different</h2>
+  <p>
+    WWF bonus square layout differs from Scrabble. Notably, the Triple Word squares are positioned slightly closer to the edges, and the Double Letter squares are arranged differently. Take 30 seconds to study the board before your first move — opening on the center star with a 5-letter word that reaches a Double Letter is +20 points versus a default opening.
+  </p>
+
+  <h2>4. Rack Management Still Rules</h2>
+  <p>
+    The same rack-management principles from Scrabble apply: keep 3-4 vowels and 3-4 consonants, avoid duplicates unless they are common letters (E, S, T, R), and don't hold onto blanks for too long.
+  </p>
+
+  <h2>5. Bingos Are Worth 35 in WWF, Not 50</h2>
+  <p>
+    WWF awards 35 bonus points for using all 7 tiles (vs. 50 in Scrabble). That makes bingos slightly less dominant — a 20-point play that improves your rack may be worth more than a 25-point bingo that leaves you with QVZ. Calculate the equity including next-turn potential.
+  </p>
+
+  <h2>6. Use WordForge's Blank Tiles for "What If" Scenarios</h2>
+  <p>
+    If you have a blank in your rack, type <code>?</code> in WordForge to enumerate every possible substitution. The blank is worth 0 points but can unlock 30-50 point plays. WWF players often waste blanks on +5 point plays — don't be that player.
+  </p>
+
+  <h2>7. Tile Tracking Matters Less in WWF</h2>
+  <p>
+    Because WWF allows you to see your opponent's last move in detail (which tiles they played and what's left), tile tracking is easier but still valuable. After 8 turns, you should have a mental count of how many high-value tiles (Q, Z, X, J, K) are unplayed.
+  </p>
+
+  <h2>8. Play Defensively When Leading</h2>
+  <p>
+    If you are up by 30+ points, do not open Triple Word lanes. Pluralize existing words to remove hooks. Play short, parallel-blocking plays. A 60-30 lead is harder to overcome than a 60-50 lead with an open board.
+  </p>
+
+  <h2>9. Take Risks When Behind</h2>
+  <p>
+    If you are down by 30+ points, take the inverse approach: open the board, leave hooks, set up bingos. You may lose by 80 instead of 30, but you also might win. Conservative play when behind is just slow losing.
+  </p>
+
+  <h2>10. Endgame: Play Out Fast</h2>
+  <p>
+    When the bag is empty, the player who plays out first gets bonus points equal to double the value of their opponent's remaining tiles. If you have low-value tiles (A, E, I, O), dump them quickly. If you have high-value tiles (Q, Z), you may want to keep them in hand if your opponent will be stuck with them.
+  </p>
+
+  <h2>Final Thought</h2>
+  <p>
+    WWF rewards consistency, not heroics. Make the high-equity play every turn, manage your rack, and let your opponents make mistakes. Use WordForge to verify candidate words before submitting — losing a turn to a challenge in WWF is just as painful as in Scrabble. Try it on <a href="/">the homepage</a>.
+  </p>
+</BlogPost>

@@ -1,10 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Solver from '../components/Solver.tsx';
+import { SITE_URL } from '../config';
 
 const title = "Word Scramble Solver — Solve Scrambled Word Puzzles";
 const description = "Solve any word scramble puzzle instantly. Enter scrambled letters and discover all possible words. Perfect for Scrabble, Word Cookies, and Jumbles.";
-const canonical = "https://wordforge.app/word-scramble/";
+const canonical = `${SITE_URL}/word-scramble/`;
 ---
 
 <Layout title={title} description={description} canonical={canonical}>
