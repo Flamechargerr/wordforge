@@ -23,6 +23,7 @@
     "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.1",
     "@typescript-eslint/eslint-plugin": "^8.62.0",
     "@typescript-eslint/parser": "^8.62.0",
     "@vitest/coverage-v8": "^4.1.9",
@@ -30,6 +31,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^1.7.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
+    "postcss": "^8.5.15",
     "prettier": "^3.8.4",
     "vitest": "^4.1.9"
   }

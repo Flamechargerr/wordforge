@@ -27,4 +27,5 @@ pnpm-debug.log*
 # generated dictionary files
 src/lib/dictionary-client.json
 src/lib/dictionary-server.ts
+src/lib/dictionary-server.json
 src/lib/top-words.ts

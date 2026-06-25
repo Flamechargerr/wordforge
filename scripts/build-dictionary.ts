@@ -203,17 +203,11 @@ function buildDictionary(wordsPath: string): BuildResult {
 }
 
 // Generate compact client dictionary (JSON, not TypeScript source)
-// Only include words up to 10 letters, limit to ~50K most useful words
+// Include ALL valid words up to 8 letters — no score-based filtering
 function generateClientDictionary(result: BuildResult): void {
-  // Client dictionary strategy: ALL words <= 6 letters (most common) + top 7-8 letter words
-  // This ensures common words are always available while keeping size reasonable
-  const shortWords = result.allWords.filter((w) => w.length <= 6);
-  const longWords = result.allWords
-    .filter((w) => w.length >= 7 && w.length <= 8)
-    .sort((a, b) => b.score - a.score || a.word.localeCompare(b.word))
-    .slice(0, 20000);
-  
-  const clientWords = [...shortWords, ...longWords];
+  // Client dictionary strategy: ALL valid words <= 8 letters
+  // No score-based filtering — every real English word must be findable
+  const clientWords = result.allWords.filter((w) => w.length <= 8);
   
   // Compact format: only store word strings in index, calculate scores on the fly
   const clientIndex: Record<string, string[]> = {};
@@ -247,41 +241,83 @@ function generateClientDictionary(result: BuildResult): void {
 
 // Generate server dictionary module (full index, used by Astro pages at build time)
 function generateServerDictionary(result: BuildResult): void {
-  const entries: string[] = [];
+  const indexObj: Record<string, WordEntry[]> = {};
   for (const [sig, words] of result.index.entries()) {
-    const wordStr = words
-      .map((w) => `{word:"${w.word}",score:${w.score},length:${w.length}}`)
-      .join(',');
-    entries.push(`["${sig}",[${wordStr}]]`);
+    indexObj[sig] = words;
   }
 
-  const module = `// AUTO-GENERATED — DO NOT EDIT
-// Full server dictionary for Astro SSG
-export const TOTAL_WORDS = ${result.allWords.length};
-export const MAX_WORD_LENGTH = 15;
-export const TOP_WORDS: string[] = [${result.topWords.slice(0, 1000).map(w => `"${w}"`).join(',')},...${JSON.stringify(result.topWords.slice(1000))}.slice(1,-1).split(',')];
+  const jsonContent = {
+    totalWords: result.allWords.length,
+    maxWordLength: 15,
+    index: indexObj
+  };
+
+  const jsonOutputPath = path.join(__dirname, '../src/lib/dictionary-server.json');
+  fs.writeFileSync(jsonOutputPath, JSON.stringify(jsonContent));
+  console.log(`Server dictionary JSON: ${result.allWords.length} words, ${(fs.statSync(jsonOutputPath).size / 1024).toFixed(0)} KB`);
+
+  // Write a small helper TS file that reads the JSON at build/run time
+  const tsContent = `// AUTO-GENERATED — DO NOT EDIT
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export type WordEntry = { readonly word: string; readonly score: number; readonly length: number };
 
-const INDEX_DATA: [string, WordEntry[]][] = [${entries.slice(0, 10000).join(',')},
-${entries.slice(10000).join(',')}];
+export const TOTAL_WORDS = ${result.allWords.length};
+export const MAX_WORD_LENGTH = 15;
+
+let cachedDict: {
+  readonly index: ReadonlyMap<string, readonly WordEntry[]>;
+  readonly totalWords: number;
+  readonly maxWordLength: number;
+} | null = null;
 
 export function createServerDictionary() {
-  const index = new Map<string, readonly WordEntry[]>();
-  for (const [sig, words] of INDEX_DATA) {
-    index.set(sig, Object.freeze(words));
+  if (cachedDict) return cachedDict;
+
+  let jsonPath = '';
+  const possiblePaths = [
+    path.join(process.cwd(), 'src/lib/dictionary-server.json'),
+    path.join(process.cwd(), 'dictionary-server.json'),
+    fileURLToPath(new URL('./dictionary-server.json', import.meta.url)),
+    fileURLToPath(new URL('../src/lib/dictionary-server.json', import.meta.url)),
+  ];
+
+  for (const p of possiblePaths) {
+    try {
+      if (fs.existsSync(p)) {
+        jsonPath = p;
+        break;
+      }
+    } catch {}
   }
-  return Object.freeze({
+
+  if (!jsonPath) {
+    throw new Error('Could not find dictionary-server.json in paths: ' + JSON.stringify(possiblePaths));
+  }
+
+  const raw = fs.readFileSync(jsonPath, 'utf8');
+  const data = JSON.parse(raw);
+
+  const index = new Map<string, readonly WordEntry[]>();
+  for (const [sig, words] of Object.entries(data.index)) {
+    index.set(sig, Object.freeze(words as WordEntry[]));
+  }
+
+  cachedDict = Object.freeze({
     index: Object.freeze(index),
-    totalWords: TOTAL_WORDS,
-    maxWordLength: MAX_WORD_LENGTH,
+    totalWords: data.totalWords,
+    maxWordLength: data.maxWordLength,
   });
+
+  return cachedDict;
 }
 `;
 
-  const outputPath = path.join(__dirname, '../src/lib/dictionary-server.ts');
-  fs.writeFileSync(outputPath, module);
-  console.log(`Server dictionary: ${result.allWords.length} words, ${(fs.statSync(outputPath).size / 1024).toFixed(0)} KB`);
+  const tsOutputPath = path.join(__dirname, '../src/lib/dictionary-server.ts');
+  fs.writeFileSync(tsOutputPath, tsContent);
+  console.log(`Server dictionary wrapper: ${(fs.statSync(tsOutputPath).size / 1024).toFixed(1)} KB`);
 }
 
 // Generate top words module for pSEO page generation

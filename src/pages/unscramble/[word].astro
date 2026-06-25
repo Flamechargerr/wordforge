@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { createClientDictionary } from '../../lib/dictionary-client';
+import { createServerDictionary } from '../../lib/dictionary-server';
 import { solve, getAnagrams } from '../../lib/solver';
 import { ALL_TOP_WORDS } from '../../lib/top-words';
 import { getWordDefinition } from '../../lib/definitions';
@@ -35,7 +35,7 @@ export function getStaticPaths() {
 const { word } = Astro.params;
 const cleanWord = (word ?? '').toLowerCase().replace(/[^a-z]/g, '');
 
-const dictionary = createClientDictionary();
+const dictionary = createServerDictionary();
 const results = solve(dictionary, cleanWord);
 const anagrams = getAnagrams(dictionary, cleanWord);
 const maxLength = results.words.length > 0 ? Math.max(...results.words.map(w => w.length)) : 0;

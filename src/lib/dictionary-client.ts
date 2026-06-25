@@ -28,16 +28,20 @@ function createWordEntry(word: string): WordEntry {
  */
 export function createClientDictionary(): Dictionary {
   const index = new Map<string, readonly WordEntry[]>();
+  let maxLen = 0;
 
   for (const [signature, words] of Object.entries(data.index)) {
     const entries: WordEntry[] = words.map(createWordEntry);
     index.set(signature, Object.freeze(entries));
+    for (const entry of entries) {
+      if (entry.length > maxLen) maxLen = entry.length;
+    }
   }
 
   return Object.freeze({
     index: Object.freeze(index),
     totalWords: data.totalWords,
-    maxWordLength: 8,
+    maxWordLength: maxLen,
   });
 }
 
