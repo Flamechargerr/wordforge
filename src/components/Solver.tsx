@@ -219,21 +219,34 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
               <div class="p-5">
                 <div class="flex flex-wrap gap-2.5">
                   {group.words.map((word) => (
-                    <button
-                      key={word.word}
-                      onClick={() => handleCopy(word.word)}
-                      class="word-tile px-4 py-2.5 rounded-xl text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 cursor-pointer"
-                      title={`Score: ${word.score} | Click to copy`}
-                      aria-label={`Copy ${word.word}`}
-                    >
-                      <span class="uppercase tracking-wide font-extrabold">{word.word}</span>
-                      <span class="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-700 group-hover:bg-white flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400 transition-colors">
-                        {word.score}
-                      </span>
-                      {copiedWord === word.word && (
-                        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-500 rounded-full ring-2 ring-white" aria-hidden="true" />
-                      )}
-                    </button>
+                    <div key={word.word} class="relative group/tile flex items-center">
+                      <a
+                        href={`/unscramble/${word.word}/`}
+                        class="word-tile pl-4 pr-11 py-2.5 rounded-xl text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 transition-all hover:pr-12"
+                        title={`View definition & details for ${word.word.toUpperCase()}`}
+                      >
+                        <span class="uppercase tracking-wide font-extrabold">{word.word}</span>
+                        <span class="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-700 group-hover:bg-white flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400 transition-colors">
+                          {word.score}
+                        </span>
+                      </a>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleCopy(word.word);
+                        }}
+                        class="absolute right-2.5 p-1.5 text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                        title={`Copy ${word.word}`}
+                        aria-label={`Copy ${word.word}`}
+                      >
+                        {copiedWord === word.word ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="text-green-500"><path d="M20 6 9 17l-5-5"/></svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        )}
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>

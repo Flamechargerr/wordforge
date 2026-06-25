@@ -20,6 +20,111 @@ const SCRABBLE_TILE_VALUES: Record<string, number> = {
   s: 1, t: 1, u: 1, v: 4, w: 4, x: 8, y: 4, z: 10,
 };
 
+// Load validation data
+const dictPath = path.join(__dirname, '../data/dictionary.json');
+const commonWordsPath = path.join(__dirname, '../data/common-words.txt');
+
+const dictData = JSON.parse(fs.readFileSync(dictPath, 'utf8'));
+const dictKeys = new Set(Object.keys(dictData).map(w => w.toLowerCase()));
+const commonWords = new Set(
+  fs.readFileSync(commonWordsPath, 'utf8')
+    .split('\n')
+    .map(w => w.trim().toLowerCase())
+    .filter(Boolean)
+);
+
+function isValidEnglishWord(word: string): boolean {
+  if (dictKeys.has(word)) return true;
+  if (commonWords.has(word)) return true;
+  if (word.length <= 2) {
+    return dictKeys.has(word) || commonWords.has(word);
+  }
+
+  // Prefix checks
+  if (word.startsWith('un') && word.length > 4) {
+    const stem = word.slice(2);
+    if (dictKeys.has(stem) || commonWords.has(stem) || isValidEnglishWord(stem)) return true;
+  }
+  if (word.startsWith('re') && word.length > 4) {
+    const stem = word.slice(2);
+    if (dictKeys.has(stem) || commonWords.has(stem) || isValidEnglishWord(stem)) return true;
+  }
+
+  // Suffix checks
+  if (word.endsWith('ly') && word.length > 4) {
+    if (word.endsWith('ily')) {
+      const stem = word.slice(0, -3) + 'y';
+      if (dictKeys.has(stem) || commonWords.has(stem)) return true;
+    }
+    const stem = word.slice(0, -2);
+    if (dictKeys.has(stem) || commonWords.has(stem) || isValidEnglishWord(stem)) return true;
+  }
+
+  if (word.endsWith('s') && !word.endsWith('ss')) {
+    if (word.endsWith('ies') && word.length > 4) {
+      const stem = word.slice(0, -3) + 'y';
+      if (dictKeys.has(stem) || commonWords.has(stem)) return true;
+    }
+    if (word.endsWith('es') && word.length > 4) {
+      const stem = word.slice(0, -2);
+      if (dictKeys.has(stem) || commonWords.has(stem) || dictKeys.has(word.slice(0, -1)) || commonWords.has(word.slice(0, -1))) return true;
+    }
+    const stem = word.slice(0, -1);
+    if (dictKeys.has(stem) || commonWords.has(stem)) return true;
+  }
+
+  if (word.endsWith('ed') && word.length > 4) {
+    if (word.endsWith('ied')) {
+      const stem = word.slice(0, -3) + 'y';
+      if (dictKeys.has(stem) || commonWords.has(stem)) return true;
+    }
+    const stemD = word.slice(0, -1);
+    if (dictKeys.has(stemD) || commonWords.has(stemD)) return true;
+    const stemEd = word.slice(0, -2);
+    if (dictKeys.has(stemEd) || commonWords.has(stemEd)) return true;
+    
+    if (word.length > 5 && word.charAt(word.length - 3) === word.charAt(word.length - 4)) {
+      const stemDouble = word.slice(0, -3);
+      if (dictKeys.has(stemDouble) || commonWords.has(stemDouble)) return true;
+    }
+  }
+
+  if (word.endsWith('ing') && word.length > 5) {
+    const stem = word.slice(0, -3);
+    if (dictKeys.has(stem) || commonWords.has(stem)) return true;
+    const stemE = stem + 'e';
+    if (dictKeys.has(stemE) || commonWords.has(stemE)) return true;
+    
+    if (word.charAt(word.length - 4) === word.charAt(word.length - 5)) {
+      const stemDouble = word.slice(0, -4);
+      if (dictKeys.has(stemDouble) || commonWords.has(stemDouble)) return true;
+    }
+  }
+
+  if (word.endsWith('er') && word.length > 4) {
+    const stem = word.slice(0, -2);
+    if (dictKeys.has(stem) || commonWords.has(stem)) return true;
+    const stemE = stem + 'e';
+    if (dictKeys.has(stemE) || commonWords.has(stemE)) return true;
+    if (word.length > 5 && word.charAt(word.length - 3) === word.charAt(word.length - 4)) {
+      const stemDouble = word.slice(0, -3);
+      if (dictKeys.has(stemDouble) || commonWords.has(stemDouble)) return true;
+    }
+  }
+  if (word.endsWith('est') && word.length > 5) {
+    const stem = word.slice(0, -3);
+    if (dictKeys.has(stem) || commonWords.has(stem)) return true;
+    const stemE = stem + 'e';
+    if (dictKeys.has(stemE) || commonWords.has(stemE)) return true;
+    if (word.length > 6 && word.charAt(word.length - 4) === word.charAt(word.length - 5)) {
+      const stemDouble = word.slice(0, -4);
+      if (dictKeys.has(stemDouble) || commonWords.has(stemDouble)) return true;
+    }
+  }
+
+  return false;
+}
+
 function calculateScore(word: string): number {
   let score = 0;
   for (const ch of word.toLowerCase()) {
@@ -55,6 +160,9 @@ function buildDictionary(wordsPath: string): BuildResult {
     const word = line.trim().toLowerCase();
     if (!word || word.length < 2 || word.length > 15) continue;
     if (!/^[a-z]+$/.test(word)) continue;
+    
+    // Filter out useless, non-English words
+    if (!isValidEnglishWord(word)) continue;
 
     const entry: WordEntry = {
       word,

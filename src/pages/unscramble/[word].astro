@@ -2,7 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import { createClientDictionary } from '../../lib/dictionary-client';
 import { solve, getAnagrams } from '../../lib/solver';
-import { TOP_WORDS } from '../../lib/top-words';
+import { ALL_TOP_WORDS } from '../../lib/top-words';
+import { getWordDefinition } from '../../lib/definitions';
 
 export function getStaticPaths() {
   // Curated common words people actually search for, mixed with top words
@@ -16,18 +17,17 @@ export function getStaticPaths() {
     'brake', 'break', 'angel', 'angle', 'glean', 'range', 'anger', 'paste',
     'spate', 'stops', 'spots', 'posts', 'steer', 'reset', 'trees', 'melon',
     'lemon', 'among', 'mango', 'horse', 'shore', 'ropes', 'spore', 'pores',
-    'arose', 'soare', 'arise', 'raise', 'arose', 'solar', 'trail', 'trial',
+    'arose', 'soare', 'arise', 'raise', 'solar', 'trail', 'trial',
     'ideal', 'dealt', 'delta', 'lated', 'lapse', 'pales', 'peals', 'pleas',
     'sepal', 'salep', 'plates', 'petals', 'pleats', 'staple', 'lasted',
     'slated', 'salted', 'crates', 'caters', 'caster', 'cartes', 'carets',
     'recast', 'traces', 'reacts', 'react', 'trace', 'cater', 'crate', 'carte',
-    'caret', 'recta', 'earth', 'heart', 'hater', 'stare', 'rates', 'tears',
-    'tares', 'aster', 'resat', 'least', 'slate', 'steal', 'stale', 'tales',
-    'teals',
+    'caret', 'recta', 'hater', 'stare', 'rates', 'tears', 'tares', 'aster',
+    'resat', 'slate', 'steal', 'tales', 'teals',
   ];
 
-  const allTargets = [...new Set([...COMMON_WORDS, ...TOP_WORDS.slice(0, 500)])];
-  return allTargets.slice(0, 500).map(word => ({
+  const allTargets = [...new Set([...COMMON_WORDS, ...ALL_TOP_WORDS.slice(0, 1500)])];
+  return allTargets.slice(0, 1500).map(word => ({
     params: { word: word.toLowerCase() },
   }));
 }
@@ -43,8 +43,16 @@ const longestWords = results.words.filter(w => w.length === maxLength);
 const highestScore = results.words.length > 0 ? Math.max(...results.words.map(w => w.score)) : 0;
 const bestWords = results.words.filter(w => w.score === highestScore);
 
-const title = `Unscramble ${cleanWord.toUpperCase()} → Words & Answers | WordForge`;
-const description = `Unscramble ${cleanWord.toUpperCase()} and find all valid words. ${results.words.length} words found, including ${longestWords.slice(0, 3).map(w => w.word).join(', ')}. Solve word puzzles, Scrabble, and Words With Friends.`;
+const definition = getWordDefinition(cleanWord);
+
+const title = definition 
+  ? `Unscramble ${cleanWord.toUpperCase()} & Meaning | WordForge`
+  : `Unscramble ${cleanWord.toUpperCase()} → Words & Answers | WordForge`;
+
+const description = definition && definition.meanings.length > 0
+  ? `Unscramble ${cleanWord.toUpperCase()} to find all valid words. Meaning of ${cleanWord}: ${definition.meanings[0].definition.slice(0, 120)}... Find Scrabble & Words With Friends points.`
+  : `Unscramble ${cleanWord.toUpperCase()} and find all valid words. ${results.words.length} words found, including ${longestWords.slice(0, 3).map(w => w.word).join(', ')}. Solve word puzzles, Scrabble, and Words With Friends.`;
+
 const canonical = `https://wordforge.app/unscramble/${cleanWord}/`;
 ---
 
@@ -86,6 +94,84 @@ const canonical = `https://wordforge.app/unscramble/${cleanWord}/`;
           <div class="text-xs text-[var(--color-muted)] mt-1 font-semibold uppercase tracking-wider">{bestWords.slice(0, 2).map(w => w.word).join(', ')}</div>
         </div>
       </div>
+    )}
+
+    <!-- Word Definition Section -->
+    {definition && (
+      <section class="panel p-6 sm:p-8 mb-8" aria-labelledby="definition-heading">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-5">
+          <h2 id="definition-heading" class="text-lg sm:text-xl font-extrabold text-[var(--color-foreground)] flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+            Definition of <span class="uppercase text-blue-600 dark:text-blue-400">{cleanWord}</span>
+          </h2>
+        </div>
+        
+        <div class="space-y-5">
+          {definition.meanings.map((meaning, index) => (
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-md">
+                  {meaning.partOfSpeech}
+                </span>
+                <span class="text-xs text-[var(--color-muted)] font-bold uppercase tracking-wide">Sense {index + 1}</span>
+              </div>
+              <p class="text-sm sm:text-base text-[var(--color-foreground)] font-medium leading-relaxed">
+                {meaning.definition}
+              </p>
+              {meaning.examples.length > 0 && (
+                <div class="pl-3.5 border-l-2 border-slate-200 dark:border-slate-700 my-1">
+                  {meaning.examples.slice(0, 2).map(ex => (
+                    <p class="text-xs sm:text-sm text-[var(--color-muted)] italic leading-relaxed">"{ex}"</p>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Synonyms & Antonyms */}
+        {(definition.synonyms.length > 0 || definition.antonyms.length > 0) && (
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-slate-100 dark:border-slate-800 pt-5 mt-6">
+            {definition.synonyms.length > 0 && (
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--color-muted)] mb-2.5">Synonyms</h4>
+                <div class="flex flex-wrap gap-1.5">
+                  {definition.synonyms.slice(0, 8).map(syn => {
+                    const cleanSyn = syn.toLowerCase().replace(/[^a-z]/g, '');
+                    return (
+                      <a 
+                        href={`/unscramble/${cleanSyn}/`} 
+                        class="px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/40 hover:bg-blue-500/5 hover:text-blue-600 dark:hover:text-blue-400 text-xs font-bold rounded-lg transition-colors border border-slate-200 dark:border-slate-800 hover:border-blue-500/10 uppercase tracking-wide"
+                      >
+                        {syn}
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            
+            {definition.antonyms.length > 0 && (
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--color-muted)] mb-2.5">Antonyms</h4>
+                <div class="flex flex-wrap gap-1.5">
+                  {definition.antonyms.slice(0, 8).map(ant => {
+                    const cleanAnt = ant.toLowerCase().replace(/[^a-z]/g, '');
+                    return (
+                      <a 
+                        href={`/unscramble/${cleanAnt}/`} 
+                        class="px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/40 hover:bg-red-500/5 hover:text-red-600 dark:hover:text-red-400 text-xs font-bold rounded-lg transition-colors border border-slate-200 dark:border-slate-800 hover:border-red-500/10 uppercase tracking-wide"
+                      >
+                        {ant}
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </section>
     )}
 
     <!-- Results by Length -->
