@@ -1,45 +1,46 @@
 /**
- * WordForge Global Styles
- * Inspired by: Apple (cleanliness), Linear (typography), Notion (simplicity)
- * Principles: minimal, fast, accessible, no unnecessary animations
+ * WordForge Premium Global Styles
+ * Inspired by: Apple, Linear, Raycast
+ * Design Language: Glassmorphism, glowing micro-accents, modern typography, rich transitions
  */
 
 @import "tailwindcss";
 
 @theme inline {
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --color-background: #fafafa;
-  --color-foreground: #111827;
-  --color-muted: #6b7280;
-  --color-border: #e5e7eb;
-  --color-accent: #2563eb;
-  --color-accent-hover: #1d4ed8;
-  --color-accent-subtle: #eff6ff;
-  --color-surface: #ffffff;
-  --color-surface-elevated: #ffffff;
-  --color-success: #059669;
-  --color-warning: #d97706;
-  --color-error: #dc2626;
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-muted: #64748b;
+  --color-border: rgba(226, 232, 240, 0.8);
+  --color-accent: #6366f1;
+  --color-accent-hover: #4f46e5;
+  --color-accent-subtle: #e0e7ff;
+  --color-surface: rgba(255, 255, 255, 0.7);
+  --color-surface-elevated: rgba(255, 255, 255, 0.9);
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
 }
 
-/* Dark mode via prefers-color-scheme (no JS toggle in V1) */
+/* Dark mode configurations */
 @media (prefers-color-scheme: dark) {
   @theme inline {
-    --color-background: #0f0f0f;
-    --color-foreground: #f3f4f6;
-    --color-muted: #9ca3af;
-    --color-border: #27272a;
-    --color-accent: #3b82f6;
-    --color-accent-hover: #60a5fa;
-    --color-accent-subtle: #1e3a5f;
-    --color-surface: #18181b;
-    --color-surface-elevated: #27272a;
+    --color-background: #090d16;
+    --color-foreground: #f8fafc;
+    --color-muted: #94a3b8;
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-accent: #8b5cf6;
+    --color-accent-hover: #a78bfa;
+    --color-accent-subtle: rgba(139, 92, 246, 0.15);
+    --color-surface: rgba(15, 23, 42, 0.6);
+    --color-surface-elevated: rgba(30, 41, 59, 0.8);
   }
 }
 
-/* Base styles */
+/* Base styles & Grid meshes */
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -52,24 +53,48 @@ body {
   font-family: var(--font-sans);
   line-height: 1.6;
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* Selection */
-::selection {
-  background: rgba(37, 99, 235, 0.2);
+/* Background gradient blur blobs for premium feel */
+body::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: -20%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
 }
 
-/* Focus styles */
-*:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-  border-radius: 4px;
+body::after {
+  content: "";
+  position: absolute;
+  bottom: -10%;
+  right: -20%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  body::before {
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 60%);
+  }
+  body::after {
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+  }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -77,24 +102,117 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 3px;
+  background: rgba(100, 116, 139, 0.2);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: rgba(100, 116, 139, 0.4);
 }
 
 @media (prefers-color-scheme: dark) {
   ::-webkit-scrollbar-thumb {
-    background: #4b5563;
+    background: rgba(255, 255, 255, 0.1);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
+    background: rgba(255, 255, 255, 0.2);
   }
 }
 
-/* Reduced motion */
+/* Selection and focus styling */
+::selection {
+  background: rgba(99, 102, 241, 0.25);
+  color: inherit;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Heading Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Glassmorphism card base */
+.glass-panel {
+  background: var(--color-surface);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass-panel {
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  }
+  .glass-panel:hover {
+    border-color: rgba(139, 92, 246, 0.4);
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.12);
+  }
+}
+
+/* Premium Word Tiles */
+.word-tile {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateZ(0);
+}
+
+.word-tile:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  box-shadow: 0 6px 15px rgba(99, 102, 241, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  .word-tile {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  .word-tile:hover {
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.2);
+  }
+}
+
+/* Subtle micro-animations */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+  }
+}
+
+.glow-accent {
+  animation: pulse-glow 3s infinite ease-in-out;
+}
+
+/* Utilities */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -106,40 +224,3 @@ body {
   }
 }
 
-/* Typography utilities */
-.text-balance {
-  text-wrap: balance;
-}
-
-.text-pretty {
-  text-wrap: pretty;
-}
-
-/* Animation utilities */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fade-in 0.2s ease-out forwards;
-}
-
-/* Utility: visually hidden but accessible */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}

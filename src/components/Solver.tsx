@@ -124,9 +124,9 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
   ) ?? null;
 
   return (
-    <div class="w-full max-w-2xl mx-auto">
-      {/* Search Input */}
-      <div class="relative">
+    <div class="w-full max-w-3xl mx-auto">
+      {/* Search Input (Spotlight/Command Bar Style) */}
+      <div class="relative group">
         <label for="solver-input" class="sr-only">Enter letters to unscramble</label>
         <input
           ref={inputRef}
@@ -134,8 +134,8 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
           type="text"
           value={input}
           onInput={(e) => handleInput((e.target as HTMLInputElement).value)}
-          placeholder="Enter letters..."
-          class="w-full px-5 py-4 text-lg sm:text-xl bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl text-[var(--color-foreground)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all shadow-sm"
+          placeholder="Enter scrambled letters (e.g., listen)..."
+          class="w-full px-6 py-5 text-xl sm:text-2xl bg-[var(--color-surface)] border-2 border-[var(--color-border)] rounded-2xl text-[var(--color-foreground)] placeholder:text-[var(--color-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-4 focus:ring-[var(--color-accent)]/10 transition-all duration-200 shadow-lg"
           maxLength={15}
           autocomplete="off"
           autocapitalize="off"
@@ -145,85 +145,96 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
         <div id="solver-hint" class="sr-only">
           Type letters to instantly unscramble them into valid words. Press / to focus.
         </div>
-        {isLoading && (
-          <div class="absolute right-4 top-1/2 -translate-y-1/2">
-            <div class="w-5 h-5 border-2 border-[var(--color-border)] border-t-[var(--color-accent)] rounded-full animate-spin" />
-          </div>
-        )}
+        
+        {/* Input indicators */}
+        <div class="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-3">
+          {isLoading && (
+            <div class="w-5 h-5 border-2 border-slate-300 dark:border-slate-700 border-t-[var(--color-accent)] rounded-full animate-spin" />
+          )}
+          <kbd class="hidden sm:inline-flex h-6 select-none items-center gap-1 rounded border border-[var(--color-border)] bg-[var(--color-background)] px-2 font-mono text-[10px] font-bold text-[var(--color-muted)]">
+            /
+          </kbd>
+        </div>
       </div>
 
       {/* Stats Bar */}
       {result && totalWords > 0 && (
-        <div class="mt-4 grid grid-cols-3 gap-3 text-center">
-          <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-3">
-            <div class="text-2xl font-bold text-[var(--color-foreground)]">{totalWords}</div>
-            <div class="text-xs text-[var(--color-muted)] uppercase tracking-wide">Words</div>
+        <div class="mt-6 grid grid-cols-3 gap-4 text-center">
+          <div class="glass-panel rounded-2xl p-4">
+            <div class="text-3xl font-extrabold text-[var(--color-foreground)]">{totalWords}</div>
+            <div class="text-xs text-[var(--color-muted)] font-medium uppercase tracking-widest mt-1">Total Words</div>
           </div>
-          <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-3">
-            <div class="text-2xl font-bold text-[var(--color-accent)]">{longestWord?.word.length ?? 0}</div>
-            <div class="text-xs text-[var(--color-muted)] uppercase tracking-wide">Longest</div>
+          <div class="glass-panel rounded-2xl p-4">
+            <div class="text-3xl font-extrabold text-[var(--color-accent)]">{longestWord?.word.length ?? 0}</div>
+            <div class="text-xs text-[var(--color-muted)] font-medium uppercase tracking-widest mt-1">Max Letters</div>
           </div>
-          <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-3">
-            <div class="text-2xl font-bold text-[var(--color-success)]">{highestScoringWord?.score ?? 0}</div>
-            <div class="text-xs text-[var(--color-muted)] uppercase tracking-wide">Best Score</div>
+          <div class="glass-panel rounded-2xl p-4">
+            <div class="text-3xl font-extrabold text-[var(--color-success)]">{highestScoringWord?.score ?? 0}</div>
+            <div class="text-xs text-[var(--color-muted)] font-medium uppercase tracking-widest mt-1">Best Score</div>
           </div>
         </div>
       )}
 
       {/* Error State */}
       {error && (
-        <div class="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-300 text-sm animate-fade-in" role="alert">
+        <div class="mt-6 p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-900/30 rounded-2xl text-red-600 dark:text-red-400 text-sm font-medium animate-fade-in" role="alert">
           {error}
         </div>
       )}
 
       {/* Empty State */}
       {result && totalWords === 0 && !error && (
-        <div class="mt-6 text-center animate-fade-in">
-          <p class="text-[var(--color-muted)] text-lg">No words found.</p>
-          <p class="text-[var(--color-muted)] text-sm mt-1">Try different letters or check your spelling.</p>
+        <div class="mt-12 text-center animate-fade-in py-8">
+          <svg class="w-12 h-12 text-[var(--color-muted)] mx-auto mb-3 opacity-60" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
+          </svg>
+          <p class="text-[var(--color-foreground)] font-semibold text-lg">No valid words found</p>
+          <p class="text-[var(--color-muted)] text-sm mt-1">Try adding more letters or double check your spelling.</p>
         </div>
       )}
 
       {/* Results */}
       {result && totalWords > 0 && (
-        <div class="mt-6 space-y-4 animate-fade-in">
+        <div class="mt-8 space-y-6 animate-fade-in">
           {/* Copy All */}
           <div class="flex justify-end">
             <button
               onClick={handleCopyAll}
-              class="text-sm text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors flex items-center gap-1"
+              class="px-4 py-2 text-xs font-semibold text-[var(--color-foreground)] hover:text-white bg-[var(--color-surface)] hover:bg-[var(--color-accent)] border border-[var(--color-border)] hover:border-transparent rounded-xl transition-all duration-200 flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
               aria-label="Copy all words"
             >
-              {copiedWord === '__all__' ? 'Copied!' : 'Copy All'}
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              {copiedWord === '__all__' ? 'Copied Everything!' : 'Copy All'}
             </button>
           </div>
 
           {/* Grouped Results */}
           {grouped.map((group) => (
-            <div key={group.length} class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl overflow-hidden">
-              <div class="px-4 py-3 bg-[var(--color-accent-subtle)] border-b border-[var(--color-border)] flex items-center justify-between">
-                <h3 class="font-semibold text-sm text-[var(--color-foreground)]">
+            <div key={group.length} class="glass-panel rounded-2xl overflow-hidden shadow-sm">
+              <div class="px-5 py-4 bg-gradient-to-r from-[var(--color-accent-subtle)] to-transparent border-b border-[var(--color-border)] flex items-center justify-between">
+                <h3 class="font-bold text-base text-[var(--color-foreground)]">
                   {group.length} Letter{group.length !== 1 ? 's' : ''}
                 </h3>
-                <span class="text-xs text-[var(--color-muted)]">{group.words.length} word{group.words.length !== 1 ? 's' : ''}</span>
+                <span class="px-2.5 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-xs font-bold text-[var(--color-muted)]">
+                  {group.words.length} word{group.words.length !== 1 ? 's' : ''}
+                </span>
               </div>
-              <div class="p-4">
-                <div class="flex flex-wrap gap-2">
+              <div class="p-5">
+                <div class="flex flex-wrap gap-2.5">
                   {group.words.map((word) => (
                     <button
                       key={word.word}
                       onClick={() => handleCopy(word.word)}
-                      class="group relative px-3 py-2 bg-[var(--color-background)] hover:bg-[var(--color-accent-subtle)] border border-[var(--color-border)] hover:border-[var(--color-accent)] rounded-lg transition-all text-sm font-medium text-[var(--color-foreground)]"
+                      class="word-tile group relative px-4 py-2.5 rounded-xl transition-all text-sm font-semibold text-[var(--color-foreground)] flex items-center gap-2 cursor-pointer"
                       title={`Score: ${word.score} | Click to copy`}
                       aria-label={`Copy ${word.word}`}
                     >
-                      <span class="uppercase tracking-wide">{word.word}</span>
-                      <span class="ml-1.5 text-xs text-[var(--color-muted)] group-hover:text-[var(--color-accent)]">
+                      <span class="uppercase tracking-wide font-bold">{word.word}</span>
+                      <span class="w-5 h-5 rounded-md bg-[var(--color-background)] group-hover:bg-white border border-[var(--color-border)] flex items-center justify-center text-[10px] font-bold text-[var(--color-muted)] group-hover:text-[var(--color-accent)] transition-colors">
                         {word.score}
                       </span>
                       {copiedWord === word.word && (
-                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-[var(--color-success)] rounded-full" aria-hidden="true" />
+                        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[var(--color-success)] rounded-full ring-2 ring-[var(--color-background)]" aria-hidden="true" />
                       )}
                     </button>
                   ))}
@@ -233,7 +244,7 @@ export default function Solver({ initialLetters = '' }: SolverProps) {
           ))}
 
           {/* Solve Time (subtle) */}
-          <p class="text-xs text-[var(--color-muted)] text-center">
+          <p class="text-xs text-[var(--color-muted)] text-center font-medium">
             Solved in {result.solveTimeMs.toFixed(1)}ms
             {result.wasTruncated && ' · Input truncated to 12 letters for performance'}
           </p>

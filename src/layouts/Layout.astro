@@ -54,8 +54,10 @@ const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Preconnect to external domains (none in V1, but prepared) -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -141,18 +143,18 @@ const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
     </a>
 
     <!-- Header -->
-    <header class="sticky top-0 z-40 bg-[var(--color-surface)]/80 backdrop-blur-md border-b border-[var(--color-border)]">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-        <a href="/" class="text-lg font-semibold tracking-tight text-[var(--color-foreground)] hover:text-[var(--color-accent)] transition-colors" aria-label="WordForge Home">
+    <header class="sticky top-0 z-40 bg-[var(--color-surface)] backdrop-blur-md border-b border-[var(--color-border)] transition-all duration-300">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <a href="/" class="text-xl font-bold tracking-tight bg-gradient-to-r from-[var(--color-accent)] to-purple-500 bg-clip-text text-transparent hover:opacity-90 transition-opacity" aria-label="WordForge Home">
           WordForge
         </a>
         <nav aria-label="Main navigation">
-          <ul class="flex items-center gap-6 text-sm">
+          <ul class="flex items-center gap-6 text-sm font-medium">
             <li>
-              <a href="/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">Unscramble</a>
+              <a href="/" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[var(--color-accent)] after:transition-all">Unscramble</a>
             </li>
             <li>
-              <a href="/about" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors">About</a>
+              <a href="/about" class="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[var(--color-accent)] after:transition-all">About</a>
             </li>
           </ul>
         </nav>
@@ -160,7 +162,7 @@ const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
     </header>
 
     <!-- Main content -->
-    <main id="main-content" class="flex-1">
+    <main id="main-content" class="flex-1 py-6">
       <slot />
     </main>
 
